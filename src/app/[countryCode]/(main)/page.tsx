@@ -1,41 +1,51 @@
 import { Metadata } from "next"
+import Image from "next/image"
 
-import FeaturedProducts from "@modules/home/components/featured-products"
-import Hero from "@modules/home/components/hero"
-import { listCollections } from "@lib/data/collections"
-import { getRegion } from "@lib/data/regions"
+import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
+import StoreTemplate from "@modules/store/templates"
 
 export const metadata: Metadata = {
-  title: "Medusa Next.js Starter Template",
-  description:
-    "A performant frontend ecommerce starter template with Next.js 15 and Medusa.",
+  title: "ঐতিহ্যের সম্ভার - Premium Online Store",
+  description: "Discover quality products at ঐতিহ্যের সম্ভার. Shop our complete collection with fast delivery.",
 }
 
-export default async function Home(props: {
-  params: Promise<{ countryCode: string }>
-}) {
-  const params = await props.params
+type Params = {
+  searchParams: Promise<{
+    sortBy?: SortOptions
+    page?: string
+  }>
+  params: Promise<{
+    countryCode: string
+  }>
+}
 
-  const { countryCode } = params
-
-  const region = await getRegion(countryCode)
-
-  const { collections } = await listCollections({
-    fields: "id, handle, title",
-  })
-
-  if (!collections || !region) {
-    return null
-  }
+export default async function HomePage(props: Params) {
+  const params = await props.params;
+  const searchParams = await props.searchParams;
+  const { sortBy, page } = searchParams
 
   return (
     <>
-      <Hero />
-      <div className="py-12">
-        <ul className="flex flex-col gap-x-6">
-          <FeaturedProducts collections={collections} region={region} />
-        </ul>
-      </div>
+      {/* Banner Hero Section */}
+      <section className="py-0">
+        <div className="content-container">
+          <Image
+            src="/banner.png"
+            alt="ঐতিহ্যের সম্ভার"
+            width={1920}
+            height={600}
+            className="w-full h-auto object-cover rounded-lg"
+            priority
+          />
+        </div>
+      </section>
+
+      {/* Products Section */}
+      <StoreTemplate
+        sortBy={sortBy}
+        page={page}
+        countryCode={params.countryCode}
+      />
     </>
   )
 }

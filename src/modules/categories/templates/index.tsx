@@ -7,9 +7,10 @@ import RefinementList from "@modules/store/components/refinement-list"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import PaginatedProducts from "@modules/store/templates/paginated-products"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { listCategories } from "@lib/data/categories"
 import { HttpTypes } from "@medusajs/types"
 
-export default function CategoryTemplate({
+export default async function CategoryTemplate({
   category,
   sortBy,
   page,
@@ -24,6 +25,14 @@ export default function CategoryTemplate({
   const sort = sortBy || "created_at"
 
   if (!category || !countryCode) notFound()
+
+  // Fetch categories on the server side
+  let categories: any[] = []
+  try {
+    categories = await listCategories() || []
+  } catch (error) {
+    console.error('Error fetching categories:', error)
+  }
 
   const parents = [] as HttpTypes.StoreProductCategory[]
 
@@ -41,7 +50,7 @@ export default function CategoryTemplate({
       className="flex flex-col small:flex-row small:items-start py-6 content-container"
       data-testid="category-container"
     >
-      <RefinementList sortBy={sort} data-testid="sort-by-container" />
+      <RefinementList sortBy={sort} categories={categories} data-testid="sort-by-container" />
       <div className="w-full">
         <div className="flex flex-row mb-8 text-2xl-semi gap-4">
           {parents &&
