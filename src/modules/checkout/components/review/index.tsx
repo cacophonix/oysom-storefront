@@ -4,6 +4,7 @@ import { Heading, Text, clx } from "@medusajs/ui"
 
 import PaymentButton from "../payment-button"
 import { useSearchParams } from "next/navigation"
+import { useEffect } from "react"
 
 const Review = ({ cart }: { cart: any }) => {
   const paidByGiftcard =
@@ -17,7 +18,7 @@ const Review = ({ cart }: { cart: any }) => {
   const missingFields = []
   if (!cart.shipping_address?.first_name) missingFields.push("Name")
   if (!cart.shipping_address?.address_1) missingFields.push("Address")
-  if (!cart.shipping_address?.city) missingFields.push("City")
+  if (!cart.shipping_address?.city) missingFields.push("District")
   if (!cart.shipping_address?.phone) missingFields.push("Phone (Required)")
   if (!cart.shipping_methods || cart.shipping_methods.length === 0) missingFields.push("Shipping method")
 
@@ -34,17 +35,20 @@ const Review = ({ cart }: { cart: any }) => {
       <div className="flex items-start gap-x-1 w-full mb-6">
         <div className="w-full">
           {missingFields.length > 0 ? (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-              <Text className="txt-medium-plus text-red-700 mb-2 font-semibold">
-                Please complete the following required fields:
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+              <Text className="txt-medium-plus text-yellow-800 mb-2 font-semibold">
+                Please complete the following required fields before placing your order:
               </Text>
               <ul className="list-disc list-inside">
                 {missingFields.map((field) => (
-                  <li key={field} className="txt-medium text-red-600">
+                  <li key={field} className="txt-medium text-yellow-700">
                     {field}
                   </li>
                 ))}
               </ul>
+              <Text className="txt-small text-yellow-700 mt-2">
+                Your address will be saved automatically when you click "Place Order"
+              </Text>
             </div>
           ) : (
             <Text className="txt-medium-plus text-ui-fg-base mb-1">

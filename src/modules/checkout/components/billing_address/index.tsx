@@ -51,13 +51,13 @@ const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
           data-testid="billing-address-input"
         />
         <Input
-          label="City"
+          label="District"
           name="billing_address.city"
           autoComplete="address-level2"
           value={formData["billing_address.city"]}
           onChange={handleChange}
           required
-          data-testid="billing-city-input"
+          data-testid="billing-district-input"
         />
         <input
           type="hidden"

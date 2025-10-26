@@ -25,6 +25,7 @@ const ShippingAddress = ({
     "shipping_address.city": cart?.shipping_address?.city || "",
     "shipping_address.country_code": "bd",
     "shipping_address.phone": cart?.shipping_address?.phone || "",
+    "police_station": "",
     email: cart?.email || "",
   })
 
@@ -129,13 +130,20 @@ const ShippingAddress = ({
           data-testid="shipping-address-input"
         />
         <Input
-          label="City"
+          label="Police Station"
+          name="police_station"
+          value={formData["police_station"]}
+          onChange={handleChange}
+          data-testid="shipping-police-station-input"
+        />
+        <Input
+          label="District"
           name="shipping_address.city"
           autoComplete="address-level2"
           value={formData["shipping_address.city"]}
           onChange={handleChange}
           required
-          data-testid="shipping-city-input"
+          data-testid="shipping-district-input"
         />
         <input
           type="hidden"

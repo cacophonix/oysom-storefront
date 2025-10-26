@@ -170,9 +170,41 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
       })
   }
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     setSubmitting(true)
+    setErrorMessage(null)
 
+    // Check if address form is still open and needs to be saved
+    const addressForm = document.getElementById('address-form') as HTMLFormElement
+    if (addressForm) {
+      // Get form data
+      const formData = new FormData(addressForm)
+      
+      // Validate required fields
+      const name = formData.get('shipping_address.first_name') as string
+      const address = formData.get('shipping_address.address_1') as string
+      const city = formData.get('shipping_address.city') as string
+      const phone = formData.get('shipping_address.phone') as string
+      
+      if (!name?.trim() || !address?.trim() || !city?.trim() || !phone?.trim()) {
+        setErrorMessage('Please fill in all required address fields (Name, Address, District, Phone)')
+        setSubmitting(false)
+        return
+      }
+      
+      // Submit the address form
+      try {
+        addressForm.requestSubmit()
+        // Form submission will redirect, so we don't need to continue here
+        return
+      } catch (err: any) {
+        setErrorMessage(err.message || 'Failed to save address')
+        setSubmitting(false)
+        return
+      }
+    }
+
+    // If address form is not open or address is already saved, proceed with payment
     onPaymentCompleted()
   }
 

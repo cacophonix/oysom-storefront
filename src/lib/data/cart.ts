@@ -341,11 +341,20 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
       throw new Error("No existing cart found when setting addresses")
     }
 
+    // Get address and police station
+    const address1 = formData.get("shipping_address.address_1") as string
+    const policeStation = formData.get("police_station") as string
+    
+    // Append police station to address if provided
+    const fullAddress = policeStation
+      ? `${address1}, Police Station: ${policeStation}`
+      : address1
+
     const data = {
       shipping_address: {
         first_name: formData.get("shipping_address.first_name"),
         last_name: formData.get("shipping_address.last_name"),
-        address_1: formData.get("shipping_address.address_1"),
+        address_1: fullAddress,
         address_2: "",
         company: formData.get("shipping_address.company"),
         postal_code: formData.get("shipping_address.postal_code"),

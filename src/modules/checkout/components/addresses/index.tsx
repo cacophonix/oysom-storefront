@@ -69,7 +69,7 @@ const Addresses = ({
         )}
       </div>
       {isOpen ? (
-        <form action={formAction}>
+        <form action={formAction} id="address-form">
           <div className="pb-8">
             <ShippingAddress
               customer={customer}
@@ -90,7 +90,6 @@ const Addresses = ({
                 <BillingAddress cart={cart} />
               </div>
             )}
-            {/* Submit button removed - only final submit in Review section */}
             <ErrorMessage error={message} data-testid="address-error-message" />
           </div>
         </form>
