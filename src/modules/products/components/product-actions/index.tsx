@@ -1,6 +1,7 @@
 "use client"
 
 import { addToCart } from "@lib/data/cart"
+import { useCartSlider } from "@lib/context/cart-slider-context"
 import { useIntersection } from "@lib/hooks/use-in-view"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
@@ -34,6 +35,7 @@ export default function ProductActions({
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
   const countryCode = useParams().countryCode as string
+  const { openCartSlider } = useCartSlider()
 
   // If there is only 1 variant, preselect the options
   useEffect(() => {
@@ -111,6 +113,9 @@ export default function ProductActions({
     })
 
     setIsAdding(false)
+    
+    // Open cart slider after adding to cart
+    openCartSlider()
   }
 
   return (
@@ -153,6 +158,15 @@ export default function ProductActions({
           className="w-full h-10"
           isLoading={isAdding}
           data-testid="add-product-button"
+          style={
+            !inStock || !selectedVariant || !!disabled || !isValidVariant
+              ? undefined
+              : {
+                  backgroundColor: '#FFBB55',
+                  color: '#000',
+                  border: 'none'
+                }
+          }
         >
           {!selectedVariant && !options
             ? "Select variant"

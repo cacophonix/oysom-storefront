@@ -8,7 +8,7 @@ import { Heading, Text, useToggleState } from "@medusajs/ui"
 import Divider from "@modules/common/components/divider"
 import Spinner from "@modules/common/icons/spinner"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useActionState } from "react"
+import { useActionState, useEffect } from "react"
 import BillingAddress from "../billing_address"
 import ErrorMessage from "../error-message"
 import ShippingAddress from "../shipping-address"
@@ -26,6 +26,13 @@ const Addresses = ({
   const pathname = usePathname()
 
   const isOpen = searchParams.get("step") === "address"
+  
+  // Auto-open address form if shipping address is not populated
+  useEffect(() => {
+    if (!cart?.shipping_address?.first_name && !isOpen) {
+      router.push(pathname + "?step=address")
+    }
+  }, [cart?.shipping_address, isOpen, router, pathname])
 
   const { state: sameAsBilling, toggle: toggleSameAsBilling } = useToggleState(
     cart?.shipping_address && cart?.billing_address
@@ -83,9 +90,7 @@ const Addresses = ({
                 <BillingAddress cart={cart} />
               </div>
             )}
-            <SubmitButton className="mt-6" data-testid="submit-address-button">
-              Continue to delivery
-            </SubmitButton>
+            {/* Submit button removed - only final submit in Review section */}
             <ErrorMessage error={message} data-testid="address-error-message" />
           </div>
         </form>
@@ -103,19 +108,14 @@ const Addresses = ({
                       Shipping Address
                     </Text>
                     <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.first_name}{" "}
-                      {cart.shipping_address.last_name}
+                      {cart.shipping_address.first_name}
                     </Text>
                     <Text className="txt-medium text-ui-fg-subtle">
                       {cart.shipping_address.address_1}{" "}
                       {cart.shipping_address.address_2}
                     </Text>
                     <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.postal_code},{" "}
                       {cart.shipping_address.city}
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.country_code?.toUpperCase()}
                     </Text>
                   </div>
 
@@ -149,19 +149,14 @@ const Addresses = ({
                     ) : (
                       <>
                         <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.first_name}{" "}
-                          {cart.billing_address?.last_name}
+                          {cart.billing_address?.first_name}
                         </Text>
                         <Text className="txt-medium text-ui-fg-subtle">
                           {cart.billing_address?.address_1}{" "}
                           {cart.billing_address?.address_2}
                         </Text>
                         <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.postal_code},{" "}
                           {cart.billing_address?.city}
-                        </Text>
-                        <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.country_code?.toUpperCase()}
                         </Text>
                       </>
                     )}

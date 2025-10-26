@@ -140,6 +140,11 @@ const StripePaymentButton = ({
         size="large"
         isLoading={submitting}
         data-testid={dataTestId}
+        style={{
+          backgroundColor: '#FFBB55',
+          color: '#000',
+          border: 'none'
+        }}
       >
         Place order
       </Button>
@@ -179,6 +184,11 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
         onClick={handlePayment}
         size="large"
         data-testid="submit-order-button"
+        style={{
+          backgroundColor: '#FFBB55',
+          color: '#000',
+          border: 'none'
+        }}
       >
         Place order
       </Button>

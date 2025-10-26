@@ -25,6 +25,11 @@ export function SubmitButton({
       isLoading={pending}
       variant={variant || "primary"}
       data-testid={dataTestId}
+      style={{
+        backgroundColor: '#FFBB55',
+        color: '#000',
+        border: 'none'
+      }}
     >
       {children}
     </Button>

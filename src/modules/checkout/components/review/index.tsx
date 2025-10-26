@@ -6,10 +6,6 @@ import PaymentButton from "../payment-button"
 import { useSearchParams } from "next/navigation"
 
 const Review = ({ cart }: { cart: any }) => {
-  const searchParams = useSearchParams()
-
-  const isOpen = searchParams.get("step") === "review"
-
   const paidByGiftcard =
     cart?.gift_cards && cart?.gift_cards?.length > 0 && cart?.total === 0
 
@@ -18,36 +14,48 @@ const Review = ({ cart }: { cart: any }) => {
     cart.shipping_methods.length > 0 &&
     (cart.payment_collection || paidByGiftcard)
 
+  const missingFields = []
+  if (!cart.shipping_address?.first_name) missingFields.push("Name")
+  if (!cart.shipping_address?.address_1) missingFields.push("Address")
+  if (!cart.shipping_address?.city) missingFields.push("City")
+  if (!cart.shipping_address?.phone) missingFields.push("Phone (Required)")
+  if (!cart.shipping_methods || cart.shipping_methods.length === 0) missingFields.push("Shipping method")
+
   return (
     <div className="bg-white">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
-          className={clx(
-            "flex flex-row text-3xl-regular gap-x-2 items-baseline",
-            {
-              "opacity-50 pointer-events-none select-none": !isOpen,
-            }
-          )}
+          className="flex flex-row text-3xl-regular gap-x-2 items-baseline"
         >
-          Review
+          Review & Place Order
         </Heading>
       </div>
-      {isOpen && previousStepsCompleted && (
-        <>
-          <div className="flex items-start gap-x-1 w-full mb-6">
-            <div className="w-full">
-              <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                By clicking the Place Order button, you confirm that you have
-                read, understand and accept our Terms of Use, Terms of Sale and
-                Returns Policy and acknowledge that you have read Medusa
-                Store&apos;s Privacy Policy.
+      <div className="flex items-start gap-x-1 w-full mb-6">
+        <div className="w-full">
+          {missingFields.length > 0 ? (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+              <Text className="txt-medium-plus text-red-700 mb-2 font-semibold">
+                Please complete the following required fields:
               </Text>
+              <ul className="list-disc list-inside">
+                {missingFields.map((field) => (
+                  <li key={field} className="txt-medium text-red-600">
+                    {field}
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
-          <PaymentButton cart={cart} data-testid="submit-order-button" />
-        </>
-      )}
+          ) : (
+            <Text className="txt-medium-plus text-ui-fg-base mb-1">
+              By clicking the Place Order button, you confirm that you have
+              read, understand and accept our Terms of Use, Terms of Sale and
+              Returns Policy and acknowledge that you have read ঐতিহ্যের সম্ভার&apos;s Privacy Policy.
+            </Text>
+          )}
+        </div>
+      </div>
+      <PaymentButton cart={cart} data-testid="submit-order-button" />
     </div>
   )
 }

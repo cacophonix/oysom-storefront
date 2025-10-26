@@ -35,7 +35,7 @@ const StoreTemplate = async ({
       <RefinementList sortBy={sort} categories={categories} />
       <div className="w-full">
         <div className="mb-8 text-2xl-semi">
-          <h1 data-testid="store-page-title">All products</h1>
+          <h1 data-testid="store-page-title">আমাদের পণ্যসমূহ</h1>
         </div>
         <Suspense fallback={<SkeletonProductGrid />}>
           <PaginatedProducts

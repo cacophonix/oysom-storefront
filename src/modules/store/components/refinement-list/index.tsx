@@ -35,8 +35,8 @@ const RefinementList = ({ sortBy, categories = [], 'data-testid': dataTestId }: 
 
   return (
     <div className="flex small:flex-col gap-12 py-4 mb-8 small:px-0 pl-6 small:min-w-[250px] small:ml-[1.675rem]">
-      {/* Categories Section */}
-      {categories.length > 0 && (
+      {/* Categories Section - Moved to top navigation */}
+      {/* {categories.length > 0 && (
         <div className="flex flex-col gap-y-4">
           <h3 className="txt-small-plus text-ui-fg-base">Categories</h3>
           <ul className="flex flex-col gap-y-2">
@@ -72,10 +72,10 @@ const RefinementList = ({ sortBy, categories = [], 'data-testid': dataTestId }: 
             })}
           </ul>
         </div>
-      )}
+      )} */}
       
-      {/* Sort Products Section */}
-      <SortProducts sortBy={sortBy} setQueryParams={setQueryParams} data-testid={dataTestId} />
+      {/* Sort Products Section - Hidden for now */}
+      {/* <SortProducts sortBy={sortBy} setQueryParams={setQueryParams} data-testid={dataTestId} /> */}
     </div>
   )
 }
