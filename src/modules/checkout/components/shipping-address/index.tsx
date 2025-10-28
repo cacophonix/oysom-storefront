@@ -66,15 +66,20 @@ const ShippingAddress = ({
   }
 
   useEffect(() => {
-    // Ensure cart is not null and has a shipping_address before setting form data
-    if (cart && cart.shipping_address) {
-      setFormAddress(cart?.shipping_address, cart?.email)
+    // Only sync from cart when form data is empty (initial load)
+    const hasFormData = formData["shipping_address.first_name"] ||
+                        formData["shipping_address.address_1"] ||
+                        formData["shipping_address.city"] ||
+                        formData["shipping_address.phone"]
+    
+    if (!hasFormData && cart && cart.shipping_address) {
+      setFormAddress(cart.shipping_address, cart.email)
     }
 
-    if (cart && !cart.email && customer?.email) {
+    if (cart && !cart.email && customer?.email && !formData.email) {
       setFormAddress(undefined, customer.email)
     }
-  }, [cart]) // Add cart as a dependency
+  }, []) // Run only on mount
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -134,6 +139,7 @@ const ShippingAddress = ({
           name="police_station"
           value={formData["police_station"]}
           onChange={handleChange}
+          required
           data-testid="shipping-police-station-input"
         />
         <Input

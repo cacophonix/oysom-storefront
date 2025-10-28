@@ -91,6 +91,12 @@ const Addresses = ({
               </div>
             )}
             <ErrorMessage error={message} data-testid="address-error-message" />
+            <SubmitButton
+              className="mt-6"
+              data-testid="submit-address-button"
+            >
+              Continue to delivery
+            </SubmitButton>
           </div>
         </form>
       ) : (
