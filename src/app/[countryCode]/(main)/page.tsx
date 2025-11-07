@@ -3,6 +3,8 @@ import Image from "next/image"
 
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import StoreTemplate from "@modules/store/templates"
+import BannerSlideshow from "@modules/home/components/banner-slideshow"
+import { getSlideshowImages } from "@lib/util/get-slideshow-images"
 
 export const metadata: Metadata = {
   title: "ঐতিহ্যের সম্ভার - Premium Online Store",
@@ -24,19 +26,26 @@ export default async function HomePage(props: Params) {
   const searchParams = await props.searchParams;
   const { sortBy, page } = searchParams
 
+  // Get slideshow images
+  const slideshowImages = await getSlideshowImages()
+
   return (
     <>
       {/* Banner Hero Section */}
       <section className="py-0">
         <div className="content-container">
-          <Image
-            src="/banner.png"
-            alt="ঐতিহ্যের সম্ভার"
-            width={1920}
-            height={600}
-            className="w-full h-auto object-cover rounded-lg"
-            priority
-          />
+          {slideshowImages.length > 0 ? (
+            <BannerSlideshow images={slideshowImages} />
+          ) : (
+            <Image
+              src="/banner.png"
+              alt="ঐতিহ্যের সম্ভার"
+              width={1920}
+              height={600}
+              className="w-full h-auto object-cover rounded-lg"
+              priority
+            />
+          )}
         </div>
       </section>
 
