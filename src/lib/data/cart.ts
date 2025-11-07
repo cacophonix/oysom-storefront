@@ -34,6 +34,7 @@ export async function retrieveCart(cartId?: string, fields?: string) {
 
   const next = {
     ...(await getCacheOptions("carts")),
+    revalidate: 0, // No caching for carts - always fetch fresh data
   }
 
   return await sdk.client
@@ -44,7 +45,7 @@ export async function retrieveCart(cartId?: string, fields?: string) {
       },
       headers,
       next,
-      cache: "force-cache",
+      cache: "no-store", // Changed from force-cache to no-store for fresh cart data
     })
     .then(({ cart }: { cart: HttpTypes.StoreCart }) => cart)
     .catch(() => null)
@@ -466,6 +467,7 @@ export async function listCartOptions() {
   }
   const next = {
     ...(await getCacheOptions("shippingOptions")),
+    revalidate: 60, // Revalidate every 60 seconds
   }
 
   return await sdk.client.fetch<{
@@ -474,6 +476,6 @@ export async function listCartOptions() {
     query: { cart_id: cartId },
     next,
     headers,
-    cache: "force-cache",
+    cache: "no-store", // Changed from force-cache to no-store for fresh data
   })
 }
