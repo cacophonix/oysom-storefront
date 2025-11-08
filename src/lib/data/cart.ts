@@ -351,6 +351,8 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
       ? `${address1}, Police Station: ${policeStation}`
       : address1
 
+    const email = formData.get("email") as string
+    
     const data = {
       shipping_address: {
         first_name: formData.get("shipping_address.first_name"),
@@ -364,7 +366,8 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
         province: formData.get("shipping_address.province"),
         phone: formData.get("shipping_address.phone"),
       },
-      email: formData.get("email"),
+      // Only include email if it's provided
+      ...(email && email.trim() !== "" && { email }),
     } as any
 
     const sameAsBilling = formData.get("same_as_billing")
