@@ -138,8 +138,8 @@ export default function ProductActions({
 
     setIsAdding(false)
     
-    // Open cart slider after adding to cart
-    openCartSlider()
+    // Don't open cart slider for regular "Add to cart"
+    // Cart slider only opens for "Quick buy" button
   }
 
   return (

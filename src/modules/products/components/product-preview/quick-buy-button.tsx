@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { addToCart } from "@lib/data/cart"
+import { useCartSlider } from "@lib/context/cart-slider-context"
 import { Button } from "@medusajs/ui"
 import Spinner from "@modules/common/icons/spinner"
 
@@ -14,6 +15,7 @@ export default function QuickBuyButton({
 }) {
   const [isAdding, setIsAdding] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const { openCartSlider } = useCartSlider()
 
   const handleQuickBuy = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -30,6 +32,9 @@ export default function QuickBuyButton({
       })
       setShowSuccess(true)
       setTimeout(() => setShowSuccess(false), 2000)
+      
+      // Open cart slider after quick buy
+      openCartSlider()
     } catch (error) {
       console.error("Error adding to cart:", error)
     } finally {
