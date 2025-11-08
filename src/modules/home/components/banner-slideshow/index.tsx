@@ -2,10 +2,17 @@
 
 import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { ChevronLeft, ChevronRight } from "@medusajs/icons"
 
+interface SlideshowImage {
+  src: string
+  link?: string
+  alt: string
+}
+
 interface BannerSlideshowProps {
-  images: string[]
+  images: SlideshowImage[]
   autoPlayInterval?: number
   height?: number
 }
@@ -101,17 +108,26 @@ export default function BannerSlideshow({
   }
 
   if (images.length === 1) {
-    return (
+    const singleImage = images[0]
+    const imageElement = (
       <div className="relative w-full" style={{ height }}>
         <Image
-          src={images[0]}
-          alt="Banner"
+          src={singleImage.src}
+          alt={singleImage.alt}
           fill
           className="object-cover rounded-lg"
           priority
           sizes="100vw"
         />
       </div>
+    )
+
+    return singleImage.link ? (
+      <Link href={singleImage.link} className="block">
+        {imageElement}
+      </Link>
+    ) : (
+      imageElement
     )
   }
 
@@ -125,23 +141,40 @@ export default function BannerSlideshow({
     >
       {/* Images */}
       <div className="relative w-full h-full overflow-hidden rounded-lg">
-        {images.map((image, index) => (
-          <div
-            key={image}
-            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-              index === currentIndex ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <Image
-              src={image}
-              alt={`Slide ${index + 1}`}
-              fill
-              className="object-cover"
-              priority={index === 0}
-              sizes="100vw"
-            />
-          </div>
-        ))}
+        {images.map((image, index) => {
+          const isVisible = index === currentIndex
+          const baseClasses = `absolute inset-0 transition-opacity duration-700 ease-in-out ${
+            isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`
+
+          return image.link ? (
+            <Link
+              key={image.src}
+              href={image.link}
+              className={baseClasses}
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                className="object-cover"
+                priority={index === 0}
+                sizes="100vw"
+              />
+            </Link>
+          ) : (
+            <div key={image.src} className={baseClasses}>
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                className="object-cover"
+                priority={index === 0}
+                sizes="100vw"
+              />
+            </div>
+          )
+        })}
       </div>
 
       {/* Previous Button */}
