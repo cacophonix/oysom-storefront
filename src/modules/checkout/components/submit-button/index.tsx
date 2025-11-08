@@ -23,15 +23,18 @@ export function SubmitButton({
       className={className}
       type="submit"
       isLoading={pending}
+      disabled={pending}
       variant={variant || "primary"}
       data-testid={dataTestId}
       style={{
         backgroundColor: '#FFBB55',
         color: '#000',
-        border: 'none'
+        border: 'none',
+        opacity: pending ? 0.6 : 1,
+        cursor: pending ? 'not-allowed' : 'pointer'
       }}
     >
-      {children}
+      {pending ? "Processing..." : children}
     </Button>
   )
 }

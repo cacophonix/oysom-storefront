@@ -21,7 +21,6 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
     !cart ||
     !cart.shipping_address ||
     !cart.billing_address ||
-    !cart.email ||
     (cart.shipping_methods?.length ?? 0) < 1
 
   const paymentSession = cart.payment_collection?.payment_sessions?.[0]
@@ -59,6 +58,10 @@ const StripePaymentButton = ({
   const onPaymentCompleted = async () => {
     await placeOrder()
       .catch((err) => {
+        // Ignore Next.js redirect errors - these are expected navigation behavior
+        if (err.digest && err.digest.startsWith('NEXT_REDIRECT')) {
+          return
+        }
         setErrorMessage(err.message)
       })
       .finally(() => {
@@ -163,6 +166,10 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
   const onPaymentCompleted = async () => {
     await placeOrder()
       .catch((err) => {
+        // Ignore Next.js redirect errors - these are expected navigation behavior
+        if (err.digest && err.digest.startsWith('NEXT_REDIRECT')) {
+          return
+        }
         setErrorMessage(err.message)
       })
       .finally(() => {
