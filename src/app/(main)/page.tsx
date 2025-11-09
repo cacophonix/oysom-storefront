@@ -51,7 +51,7 @@ export default async function HomePage(props: Params) {
     <>
       {/* Banner Hero Section */}
       <section className="py-0">
-        <div className="content-container">
+        <div className="content-container px-4 sm:px-6">
           {slideshowImages.length > 0 ? (
             <BannerSlideshow images={slideshowImages} />
           ) : (
