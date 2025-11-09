@@ -43,7 +43,7 @@ export default function QuickBuyButton({
   }
 
   return (
-    <div className="flex justify-center mt-2">
+    <div className="flex justify-center mt-6 mb-2">
       <Button
         onClick={handleQuickBuy}
         disabled={isAdding || showSuccess}
