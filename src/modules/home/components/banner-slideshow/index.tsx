@@ -20,7 +20,7 @@ interface BannerSlideshowProps {
 export default function BannerSlideshow({
   images,
   autoPlayInterval = 5000,
-  height = 600,
+  height = 500,
 }: BannerSlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)

@@ -6,7 +6,7 @@ This folder contains images for the homepage banner slideshow.
 
 1. Place your slideshow images in this folder
 2. Supported formats: `.jpg`, `.jpeg`, `.png`, `.webp`
-3. Recommended dimensions: 1920x600 pixels for best results
+3. Recommended dimensions: 1600x900 pixels for best results
 4. Name your files descriptively (e.g., `banner-1.jpg`, `promo-2.png`)
 
 ## Example

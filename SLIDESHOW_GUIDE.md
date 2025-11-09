@@ -18,7 +18,7 @@ The homepage now features an automatic slideshow banner instead of a static imag
 
 ### Step 1: Prepare Your Images
 
-1. **Recommended Dimensions**: 1920x600 pixels
+1. **Recommended Dimensions**: 1600x900 pixels (16:9 aspect ratio)
 2. **Supported Formats**: `.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`
 3. **File Size**: Optimize images for web (recommended: under 500KB each)
 
@@ -116,9 +116,9 @@ Examples:
 Edit [`oysom-storefront/src/app/[countryCode]/(main)/page.tsx`](oysom-storefront/src/app/[countryCode]/(main)/page.tsx:33):
 
 ```tsx
-<BannerSlideshow 
-  images={slideshowImages} 
-  height={600}  // Change this value (in pixels)
+<BannerSlideshow
+  images={slideshowImages}
+  height={500}  // Change this value (in pixels)
 />
 ```
 
@@ -221,7 +221,7 @@ special-rice.png
 ## Best Practices
 
 1. **Image Optimization**: Compress images before uploading (aim for <500KB per image)
-2. **Consistent Dimensions**: Use 1920x600 pixels for all slides
+2. **Consistent Dimensions**: Use 1600x900 pixels for all slides (16:9 aspect ratio)
 3. **Strategic Naming**: Use numbered prefixes with product handles (`banner-1-ghee.png`)
 4. **Product Links**: Verify product handles exist before naming banners
 5. **Mobile Testing**: Test clickability and swipe functionality on mobile devices

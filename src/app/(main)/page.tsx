@@ -31,13 +31,13 @@ export default async function HomePage(props: Params) {
       <section className="py-0">
         <div className="content-container">
           {slideshowImages.length > 0 ? (
-            <BannerSlideshow images={slideshowImages} />
+            <BannerSlideshow images={slideshowImages} height={500} />
           ) : (
             <Image
               src="/banner.png"
               alt="ঐতিহ্যের সম্ভার"
-              width={1920}
-              height={600}
+              width={1600}
+              height={900}
               className="w-full h-auto object-cover rounded-lg"
               priority
             />
