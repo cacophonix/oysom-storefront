@@ -28,22 +28,18 @@ const StoreTemplate = async ({
   }
 
   return (
-    <div
-      className="flex flex-col small:flex-row small:items-start py-6"
-      data-testid="category-container"
-    >
-      <div className="content-container flex flex-col small:flex-row small:items-start w-full">
-        <RefinementList sortBy={sort} categories={categories} />
-        <div className="w-full">
-          <div className="mb-8 text-2xl-semi">
-            <h1 data-testid="store-page-title">আমাদের পণ্যসমূহ</h1>
-          </div>
-        <Suspense fallback={<SkeletonProductGrid />}>
-          <PaginatedProducts
-            sortBy={sort}
-            page={pageNumber}
-            countryCode={countryCode}
-          />
+    <div className="py-6">
+      <div className="content-container">
+        <div className="mb-8 text-2xl-semi text-center">
+          <h1 data-testid="store-page-title">আমাদের পণ্যসমূহ</h1>
+        </div>
+        <div data-testid="category-container">
+          <Suspense fallback={<SkeletonProductGrid />}>
+            <PaginatedProducts
+              sortBy={sort}
+              page={pageNumber}
+              countryCode={countryCode}
+            />
           </Suspense>
         </div>
       </div>
