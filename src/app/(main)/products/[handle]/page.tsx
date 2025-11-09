@@ -49,13 +49,35 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     notFound()
   }
 
+  const productTitle = `${product.title} | ঐতিহ্যের সম্ভার (Oysom)`
+  const productDescription = product.description || product.title
+  const productUrl = `https://www.oysom.com/products/${handle}`
+  const productImage = product.thumbnail || "https://www.oysom.com/logo.jpg"
+
   return {
-    title: `${product.title} | ঐতিহ্যের সম্ভার`,
-    description: `${product.title}`,
+    title: productTitle,
+    description: productDescription,
     openGraph: {
-      title: `${product.title} | ঐতিহ্যের সম্ভার`,
-      description: `${product.title}`,
-      images: product.thumbnail ? [product.thumbnail] : [],
+      title: productTitle,
+      description: productDescription,
+      url: productUrl,
+      siteName: "Oysom - ঐতিহ্যের সম্ভার",
+      type: "website",
+      images: [
+        {
+          url: productImage,
+          width: 1200,
+          height: 630,
+          alt: product.title,
+        },
+      ],
+      locale: "bn_BD",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: productTitle,
+      description: productDescription,
+      images: [productImage],
     },
   }
 }

@@ -9,6 +9,28 @@ import { getSlideshowImages } from "@lib/util/get-slideshow-images"
 export const metadata: Metadata = {
   title: "ঐতিহ্যের সম্ভার - Premium Online Store",
   description: "Discover quality products at ঐতিহ্যের সম্ভার. Shop our complete collection with fast delivery.",
+  openGraph: {
+    title: "Oysom - ঐতিহ্যের সম্ভার",
+    description: "Discover quality products at ঐতিহ্যের সম্ভার. Shop our complete collection with fast delivery.",
+    url: "https://www.oysom.com",
+    siteName: "Oysom - ঐতিহ্যের সম্ভার",
+    type: "website",
+    locale: "bn_BD",
+    images: [
+      {
+        url: "https://www.oysom.com/logo.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Oysom - ঐতিহ্যের সম্ভার",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Oysom - ঐতিহ্যের সম্ভার",
+    description: "Discover quality products at ঐতিহ্যের সম্ভার. Shop our complete collection with fast delivery.",
+    images: ["https://www.oysom.com/logo.jpg"],
+  },
 }
 
 type Params = {
