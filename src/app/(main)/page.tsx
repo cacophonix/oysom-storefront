@@ -53,7 +53,7 @@ export default async function HomePage(props: Params) {
       <section className="py-0">
         <div className="content-container">
           {slideshowImages.length > 0 ? (
-            <BannerSlideshow images={slideshowImages} height={500} />
+            <BannerSlideshow images={slideshowImages} />
           ) : (
             <Image
               src="/banner.png"

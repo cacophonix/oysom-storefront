@@ -14,13 +14,11 @@ interface SlideshowImage {
 interface BannerSlideshowProps {
   images: SlideshowImage[]
   autoPlayInterval?: number
-  height?: number
 }
 
 export default function BannerSlideshow({
   images,
   autoPlayInterval = 5000,
-  height = 500,
 }: BannerSlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
@@ -101,7 +99,7 @@ export default function BannerSlideshow({
 
   if (images.length === 0) {
     return (
-      <div className="w-full bg-gray-200 flex items-center justify-center" style={{ height }}>
+      <div className="w-full bg-gray-200 flex items-center justify-center h-48 sm:h-64 md:h-80 lg:h-96 rounded-lg">
         <p className="text-gray-500">No slideshow images found. Add images to /public/slideshow/</p>
       </div>
     )
@@ -110,7 +108,7 @@ export default function BannerSlideshow({
   if (images.length === 1) {
     const singleImage = images[0]
     const imageElement = (
-      <div className="relative w-full" style={{ height }}>
+      <div className="relative w-full h-48 sm:h-64 md:h-80 lg:h-96 xl:h-[500px]">
         <Image
           src={singleImage.src}
           alt={singleImage.alt}
@@ -133,8 +131,7 @@ export default function BannerSlideshow({
 
   return (
     <div
-      className="relative w-full group"
-      style={{ height }}
+      className="relative w-full h-48 sm:h-64 md:h-80 lg:h-96 xl:h-[500px] group"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
@@ -183,10 +180,10 @@ export default function BannerSlideshow({
           goToPrevious()
           setIsAutoPlaying(false)
         }}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 sm:p-2 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
         aria-label="Previous slide"
       >
-        <ChevronLeft className="w-6 h-6 text-gray-800" />
+        <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6 text-gray-800" />
       </button>
 
       {/* Next Button */}
@@ -195,22 +192,22 @@ export default function BannerSlideshow({
           goToNext()
           setIsAutoPlaying(false)
         }}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 sm:p-2 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
         aria-label="Next slide"
       >
-        <ChevronRight className="w-6 h-6 text-gray-800" />
+        <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6 text-gray-800" />
       </button>
 
       {/* Dots Navigation */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+      <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 sm:gap-2">
         {images.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all ${
+            className={`h-2 sm:h-3 rounded-full transition-all ${
               index === currentIndex
-                ? "bg-white w-8"
-                : "bg-white/60 hover:bg-white/80"
+                ? "bg-white w-6 sm:w-8"
+                : "bg-white/60 hover:bg-white/80 w-2 sm:w-3"
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />
