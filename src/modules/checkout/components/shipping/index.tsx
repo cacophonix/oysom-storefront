@@ -222,7 +222,7 @@ const Shipping: React.FC<ShippingProps> = ({
                 How would you like you order delivered
               </span>
               <span className="mb-4 text-ui-fg-subtle txt-small italic">
-                Note: For every extra 1 KG, BDT 20.00 will be added to the shipping cost
+                Note: For every extra 1 KG, ৳20.00 will be added to the shipping cost
               </span>
             </div>
             <div data-testid="delivery-options-container">

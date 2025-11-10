@@ -18,6 +18,11 @@ const Review = ({ cart }: { cart: any }) => {
   const missingFields = []
   if (!cart.shipping_address?.first_name) missingFields.push("Name")
   if (!cart.shipping_address?.address_1) missingFields.push("Address")
+  
+  // Check if police station is included in the address
+  const hasPoliceStation = cart.shipping_address?.address_1?.includes("Police Station:")
+  if (!hasPoliceStation) missingFields.push("Police Station")
+  
   if (!cart.shipping_address?.city) missingFields.push("District")
   if (!cart.shipping_address?.phone) missingFields.push("Phone (Required)")
   if (!cart.shipping_methods || cart.shipping_methods.length === 0) missingFields.push("Shipping method")

@@ -17,10 +17,21 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
   cart,
   "data-testid": dataTestId,
 }) => {
+  // Check if all required address fields are filled
+  const hasRequiredAddressFields = cart?.shipping_address?.first_name &&
+    cart?.shipping_address?.address_1 &&
+    cart?.shipping_address?.city &&
+    cart?.shipping_address?.phone
+
+  // Check if police station is included in address_1 (it's appended there)
+  const hasPoliceStation = cart?.shipping_address?.address_1?.includes("Police Station:")
+
   const notReady =
     !cart ||
     !cart.shipping_address ||
     !cart.billing_address ||
+    !hasRequiredAddressFields ||
+    !hasPoliceStation ||
     (cart.shipping_methods?.length ?? 0) < 1
 
   const paymentSession = cart.payment_collection?.payment_sessions?.[0]
