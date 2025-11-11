@@ -11,10 +11,12 @@ const StoreTemplate = async ({
   sortBy,
   page,
   countryCode,
+  categoryId,
 }: {
   sortBy?: SortOptions
   page?: string
   countryCode: string
+  categoryId?: string
 }) => {
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
@@ -39,6 +41,7 @@ const StoreTemplate = async ({
               sortBy={sort}
               page={pageNumber}
               countryCode={countryCode}
+              categoryId={categoryId}
             />
           </Suspense>
         </div>

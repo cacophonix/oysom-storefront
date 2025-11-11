@@ -5,6 +5,7 @@ import { SortOptions } from "@modules/store/components/refinement-list/sort-prod
 import StoreTemplate from "@modules/store/templates"
 import BannerSlideshow from "@modules/home/components/banner-slideshow"
 import { getSlideshowImages } from "@lib/util/get-slideshow-images"
+import { listCategories } from "@lib/data/categories"
 
 export const metadata: Metadata = {
   title: "ঐতিহ্যের সম্ভার - Premium Online Store",
@@ -47,6 +48,18 @@ export default async function HomePage(props: Params) {
   // Get slideshow images
   const slideshowImages = await getSlideshowImages()
 
+  // Fetch categories and find the Food category
+  let foodCategoryId: string | undefined
+  try {
+    const categories = await listCategories()
+    const foodCategory = categories?.find(
+      (cat) => cat.name.toLowerCase() === "food"
+    )
+    foodCategoryId = foodCategory?.id
+  } catch (error) {
+    console.error("Error fetching Food category:", error)
+  }
+
   return (
     <>
       {/* Banner Hero Section */}
@@ -67,11 +80,12 @@ export default async function HomePage(props: Params) {
         </div>
       </section>
 
-      {/* Products Section */}
+      {/* Products Section - Only Food Category */}
       <StoreTemplate
         sortBy={sortBy}
         page={page}
         countryCode="bd"
+        categoryId={foodCategoryId}
       />
     </>
   )
