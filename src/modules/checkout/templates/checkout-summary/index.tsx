@@ -17,7 +17,7 @@ const CheckoutSummary = ({ cart }: { cart: any }) => {
           In your Cart
         </Heading>
         <Divider className="my-6" />
-        <CartTotals totals={cart} />
+        <CartTotals totals={{ ...cart, items: cart.items }} />
         <ItemsPreviewTemplate cart={cart} type="full" />
         <div className="my-6">
           <DiscountCode cart={cart} />

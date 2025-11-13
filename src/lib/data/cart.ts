@@ -14,6 +14,7 @@ import {
   setCartId,
 } from "./cookies"
 import { getRegion } from "./regions"
+import { calculateWeightCharge } from "@lib/util/calculate-weight-charge"
 
 /**
  * Retrieves a cart by its ID. If no ID is provided, it will use the cart ID from the cookies.
@@ -22,7 +23,7 @@ import { getRegion } from "./regions"
  */
 export async function retrieveCart(cartId?: string, fields?: string) {
   const id = cartId || (await getCartId())
-  fields ??= "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name"
+  fields ??= "*items, *region, *items.product, *items.variant, +items.variant.weight, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name"
 
   if (!id) {
     return null
@@ -408,6 +409,27 @@ export async function placeOrder(cartId?: string) {
 
   const headers = {
     ...(await getAuthHeaders()),
+  }
+
+  // Retrieve cart with items to calculate weight charge
+  const cart = await retrieveCart(id)
+  
+  // Calculate weight delivery charge and store in cart metadata before completing
+  if (cart && cart.items) {
+    const weightCharge = calculateWeightCharge(cart.items)
+    
+    // Update cart metadata with weight charge
+    await sdk.store.cart.update(
+      id,
+      {
+        metadata: {
+          ...cart.metadata,
+          weight_delivery_charge: weightCharge,
+        },
+      },
+      {},
+      headers
+    )
   }
 
   const cartRes = await sdk.store.cart

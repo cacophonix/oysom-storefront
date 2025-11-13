@@ -2,6 +2,7 @@
 
 import { addToCart } from "@lib/data/cart"
 import { useCartSlider } from "@lib/context/cart-slider-context"
+import { useProduct } from "@lib/context/product-context"
 import { useIntersection } from "@lib/hooks/use-in-view"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
@@ -35,6 +36,7 @@ export default function ProductActions({
   const [quantity, setQuantity] = useState(1)
   const [isAdding, setIsAdding] = useState(false)
   const { openCartSlider } = useCartSlider()
+  const { setSelectedVariant } = useProduct()
 
   // If there is only 1 variant, preselect the options
   useEffect(() => {
@@ -54,6 +56,11 @@ export default function ProductActions({
       return isEqual(variantOptions, options)
     })
   }, [product.variants, options])
+
+  // Update context when selected variant changes
+  useEffect(() => {
+    setSelectedVariant(selectedVariant)
+  }, [selectedVariant, setSelectedVariant])
 
   // update the options when a variant is selected
   const setOptionValue = (optionId: string, value: string) => {

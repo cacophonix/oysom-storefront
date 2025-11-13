@@ -1,6 +1,7 @@
 "use client"
 
 import { convertToLocale } from "@lib/util/money"
+import { calculateWeightCharge, getTotalWeight, getChargeableWeightKG } from "@lib/util/calculate-weight-charge"
 import React from "react"
 
 type CartTotalsProps = {
@@ -12,6 +13,11 @@ type CartTotalsProps = {
     item_subtotal?: number | null
     shipping_subtotal?: number | null
     discount_subtotal?: number | null
+    items?: Array<{
+      quantity: number
+      product?: { weight?: number | null } | null
+      variant?: { product?: { weight?: number | null } | null } | null
+    }>
   }
 }
 
@@ -23,7 +29,13 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
     item_subtotal,
     shipping_subtotal,
     discount_subtotal,
+    items,
   } = totals
+
+  // Calculate weight delivery charge
+  const weightCharge = items ? calculateWeightCharge(items) : 0
+  const totalWeightGrams = items ? getTotalWeight(items) : 0
+  const chargeableWeightKG = items ? getChargeableWeightKG(items) : 0
 
   return (
     <div>
@@ -40,6 +52,19 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
             {convertToLocale({ amount: shipping_subtotal ?? 0, currency_code })}
           </span>
         </div>
+        {weightCharge > 0 && (
+          <div className="flex items-center justify-between">
+            <span className="flex gap-x-1 items-center">
+              Extra charge on weight ({(totalWeightGrams / 1000).toFixed(2)} kg)
+              <span className="text-ui-fg-muted text-xs">
+                ({chargeableWeightKG} kg × 20 ৳)
+              </span>
+            </span>
+            <span data-testid="cart-weight-charge" data-value={weightCharge}>
+              {convertToLocale({ amount: weightCharge, currency_code })}
+            </span>
+          </div>
+        )}
         {!!discount_subtotal && (
           <div className="flex items-center justify-between">
             <span>Discount</span>

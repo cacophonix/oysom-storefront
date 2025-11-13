@@ -1,4 +1,5 @@
 import { convertToLocale } from "@lib/util/money"
+import { calculateWeightCharge, getTotalWeight, getChargeableWeightKG } from "@lib/util/calculate-weight-charge"
 import { HttpTypes } from "@medusajs/types"
 
 type OrderSummaryProps = {
@@ -16,6 +17,11 @@ const OrderSummary = ({ order }: OrderSummaryProps) => {
       currency_code: order.currency_code,
     })
   }
+
+  // Calculate weight delivery charge
+  const weightCharge = order.items ? calculateWeightCharge(order.items) : 0
+  const totalWeightGrams = order.items ? getTotalWeight(order.items) : 0
+  const chargeableWeightKG = order.items ? getChargeableWeightKG(order.items) : 0
 
   return (
     <div>
@@ -42,6 +48,17 @@ const OrderSummary = ({ order }: OrderSummaryProps) => {
             <span>Shipping</span>
             <span>{getAmount(order.shipping_total)}</span>
           </div>
+          {weightCharge > 0 && (
+            <div className="flex items-center justify-between">
+              <span className="flex gap-x-1 items-center">
+                Extra charge on weight ({(totalWeightGrams / 1000).toFixed(2)} kg)
+                <span className="text-ui-fg-muted text-xs">
+                  ({chargeableWeightKG} kg × 20 ৳)
+                </span>
+              </span>
+              <span>{getAmount(weightCharge)}</span>
+            </div>
+          )}
           <div className="flex items-center justify-between">
             <span>Taxes</span>
             <span>{getAmount(order.tax_total)}</span>

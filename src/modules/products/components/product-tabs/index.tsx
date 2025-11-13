@@ -6,16 +6,18 @@ import Refresh from "@modules/common/icons/refresh"
 
 import Accordion from "./accordion"
 import { HttpTypes } from "@medusajs/types"
+import { useProduct } from "@lib/context/product-context"
 
 type ProductTabsProps = {
   product: HttpTypes.StoreProduct
 }
 
 const ProductTabs = ({ product }: ProductTabsProps) => {
+  const { selectedVariant } = useProduct()
   const tabs = [
     {
       label: "Product Information",
-      component: <ProductInfoTab product={product} />,
+      component: <ProductInfoTab product={product} variant={selectedVariant} />,
     },
     {
       label: "Shipping & Returns",
@@ -41,7 +43,10 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
   )
 }
 
-const ProductInfoTab = ({ product }: ProductTabsProps) => {
+const ProductInfoTab = ({ product, variant }: ProductTabsProps & { variant?: HttpTypes.StoreProductVariant }) => {
+  // Use variant weight if available, otherwise fall back to product weight
+  const displayWeight = variant?.weight ?? product.weight
+  const isVariantWeight = variant?.weight !== undefined && variant?.weight !== null
   return (
     <div className="text-small-regular py-8">
       <div className="grid grid-cols-2 gap-x-8">
@@ -62,7 +67,20 @@ const ProductInfoTab = ({ product }: ProductTabsProps) => {
         <div className="flex flex-col gap-y-4">
           <div>
             <span className="font-semibold">Weight</span>
-            <p>{product.weight ? `${product.weight} g` : "-"}</p>
+            <p className="text-sm">
+              {displayWeight ? (
+                <>
+                  {displayWeight} g
+                  {!isVariantWeight && product.variants && product.variants.length > 1 && (
+                    <span className="block text-xs text-gray-500 mt-1">
+                      May vary by variant
+                    </span>
+                  )}
+                </>
+              ) : (
+                "-"
+              )}
+            </p>
           </div>
           <div>
             <span className="font-semibold">Dimensions</span>
