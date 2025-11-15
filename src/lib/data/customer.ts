@@ -165,6 +165,17 @@ export const addCustomerAddress = async (
   const isDefaultBilling = (currentState.isDefaultBilling as boolean) || false
   const isDefaultShipping = (currentState.isDefaultShipping as boolean) || false
 
+  // Extract metadata fields
+  const metadata: Record<string, any> = {}
+  formData.forEach((value, key) => {
+    if (key.startsWith("metadata[") && key.endsWith("]")) {
+      const metadataKey = key.slice(9, -1) // Remove "metadata[" and "]"
+      if (value) {
+        metadata[metadataKey] = value
+      }
+    }
+  })
+
   const address = {
     first_name: formData.get("first_name") as string,
     last_name: formData.get("last_name") as string,
@@ -178,6 +189,7 @@ export const addCustomerAddress = async (
     phone: formData.get("phone") as string,
     is_default_billing: isDefaultBilling,
     is_default_shipping: isDefaultShipping,
+    ...(Object.keys(metadata).length > 0 && { metadata }),
   }
 
   const headers = {
@@ -226,6 +238,17 @@ export const updateCustomerAddress = async (
     return { success: false, error: "Address ID is required" }
   }
 
+  // Extract metadata fields
+  const metadata: Record<string, any> = {}
+  formData.forEach((value, key) => {
+    if (key.startsWith("metadata[") && key.endsWith("]")) {
+      const metadataKey = key.slice(9, -1) // Remove "metadata[" and "]"
+      if (value) {
+        metadata[metadataKey] = value
+      }
+    }
+  })
+
   const address = {
     first_name: formData.get("first_name") as string,
     last_name: formData.get("last_name") as string,
@@ -236,6 +259,7 @@ export const updateCustomerAddress = async (
     postal_code: formData.get("postal_code") as string,
     province: formData.get("province") as string,
     country_code: formData.get("country_code") as string,
+    ...(Object.keys(metadata).length > 0 && { metadata }),
   } as HttpTypes.StoreUpdateCustomerAddress
 
   const phone = formData.get("phone") as string

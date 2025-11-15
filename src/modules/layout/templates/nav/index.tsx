@@ -22,6 +22,9 @@ export default async function Nav() {
       <header className="relative mx-auto border-b duration-200 bg-white border-ui-border-base">
         <nav className="content-container txt-xsmall-plus text-ui-fg-subtle flex items-center justify-between w-full h-full text-small-regular">
           <div className="flex-1 basis-0 h-full flex items-center">
+            <div className="small:hidden">
+              <SideMenu regions={regions} />
+            </div>
           </div>
 
           <div className="flex items-center h-full">

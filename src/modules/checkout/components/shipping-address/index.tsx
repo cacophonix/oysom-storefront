@@ -56,6 +56,7 @@ const ShippingAddress = ({
         "shipping_address.city": address?.city || "",
         "shipping_address.country_code": "bd",
         "shipping_address.phone": address?.phone || "",
+        "police_station": (address as any)?.metadata?.police_station || "",
       }))
 
     email &&
@@ -148,7 +149,6 @@ const ShippingAddress = ({
           autoComplete="address-level2"
           value={formData["shipping_address.city"]}
           onChange={handleChange}
-          required
           data-testid="shipping-district-input"
         />
         <input

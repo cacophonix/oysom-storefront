@@ -5,7 +5,6 @@ import { Button, Heading } from "@medusajs/ui"
 import { useEffect, useState, useActionState } from "react"
 
 import useToggleState from "@lib/hooks/use-toggle-state"
-import CountrySelect from "@modules/checkout/components/country-select"
 import Input from "@modules/common/components/input"
 import Modal from "@modules/common/components/modal"
 import { SubmitButton } from "@modules/checkout/components/submit-button"
@@ -64,28 +63,14 @@ const AddAddress = ({
         <form action={formAction}>
           <Modal.Body>
             <div className="flex flex-col gap-y-2">
-              <div className="grid grid-cols-2 gap-x-2">
-                <Input
-                  label="First name"
-                  name="first_name"
-                  required
-                  autoComplete="given-name"
-                  data-testid="first-name-input"
-                />
-                <Input
-                  label="Last name"
-                  name="last_name"
-                  required
-                  autoComplete="family-name"
-                  data-testid="last-name-input"
-                />
-              </div>
               <Input
-                label="Company"
-                name="company"
-                autoComplete="organization"
-                data-testid="company-input"
+                label="Name"
+                name="first_name"
+                required
+                autoComplete="name"
+                data-testid="name-input"
               />
+              <input type="hidden" name="last_name" value="-" />
               <Input
                 label="Address"
                 name="address_1"
@@ -103,37 +88,23 @@ const AddAddress = ({
                 <Input
                   label="Postal code"
                   name="postal_code"
-                  required
                   autoComplete="postal-code"
                   data-testid="postal-code-input"
                 />
                 <Input
                   label="City"
                   name="city"
-                  required
                   autoComplete="locality"
                   data-testid="city-input"
                 />
               </div>
               <Input
-                label="Province / State"
-                name="province"
-                autoComplete="address-level1"
-                data-testid="state-input"
+                label="Police Station"
+                name="metadata[police_station]"
+                autoComplete="off"
+                data-testid="police-station-input"
               />
-              <CountrySelect
-                region={region}
-                name="country_code"
-                required
-                autoComplete="country"
-                data-testid="country-select"
-              />
-              <Input
-                label="Phone"
-                name="phone"
-                autoComplete="phone"
-                data-testid="phone-input"
-              />
+              <input type="hidden" name="country_code" value="bd" />
             </div>
             {formState.error && (
               <div

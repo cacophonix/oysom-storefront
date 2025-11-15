@@ -21,7 +21,7 @@ const ProfileName: React.FC<MyInformationProps> = ({ customer }) => {
   ) => {
     const customer = {
       first_name: formData.get("first_name") as string,
-      last_name: formData.get("last_name") as string,
+      last_name: "-",
     }
 
     try {
@@ -49,28 +49,19 @@ const ProfileName: React.FC<MyInformationProps> = ({ customer }) => {
     <form action={formAction} className="w-full overflow-visible">
       <AccountInfo
         label="Name"
-        currentInfo={`${customer.first_name} ${customer.last_name}`}
+        currentInfo={`${customer.first_name}`}
         isSuccess={successState}
         isError={!!state?.error}
         clearState={clearState}
         data-testid="account-name-editor"
       >
-        <div className="grid grid-cols-2 gap-x-4">
-          <Input
-            label="First name"
-            name="first_name"
-            required
-            defaultValue={customer.first_name ?? ""}
-            data-testid="first-name-input"
-          />
-          <Input
-            label="Last name"
-            name="last_name"
-            required
-            defaultValue={customer.last_name ?? ""}
-            data-testid="last-name-input"
-          />
-        </div>
+        <Input
+          label="Name"
+          name="first_name"
+          required
+          defaultValue={customer.first_name ?? ""}
+          data-testid="name-input"
+        />
       </AccountInfo>
     </form>
   )
