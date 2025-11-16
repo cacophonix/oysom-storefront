@@ -12,6 +12,7 @@ import LineItemUnitPrice from "@modules/common/components/line-item-unit-price"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Spinner from "@modules/common/icons/spinner"
 import Thumbnail from "@modules/products/components/thumbnail"
+import { toBengaliNumerals } from "@lib/util/bengali-numerals"
 import { useState } from "react"
 
 type ItemProps = {
@@ -89,14 +90,10 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
                 },
                 (_, i) => (
                   <option value={i + 1} key={i}>
-                    {i + 1}
+                    {toBengaliNumerals(i + 1)}
                   </option>
                 )
               )}
-
-              <option value={1} key={1}>
-                1
-              </option>
             </CartItemSelect>
             {updating && <Spinner />}
           </div>

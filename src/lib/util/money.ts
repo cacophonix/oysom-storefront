@@ -1,4 +1,5 @@
 import { isEmpty } from "./isEmpty"
+import { toBengaliNumerals } from "./bengali-numerals"
 
 type ConvertToLocaleParams = {
   amount: number
@@ -16,7 +17,7 @@ export const convertToLocale = ({
   locale = "en-US",
 }: ConvertToLocaleParams) => {
   if (!currency_code || isEmpty(currency_code)) {
-    return amount.toString()
+    return toBengaliNumerals(amount.toString())
   }
 
   const formatted = new Intl.NumberFormat(locale, {
@@ -27,5 +28,8 @@ export const convertToLocale = ({
   }).format(amount)
 
   // Replace BDT with ৳ symbol for Bangladeshi Taka
-  return formatted.replace(/BDT\s*/g, "৳")
+  const withCurrencySymbol = formatted.replace(/BDT\s*/g, "৳")
+  
+  // Convert all numerals to Bengali
+  return toBengaliNumerals(withCurrencySymbol)
 }

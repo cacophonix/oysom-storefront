@@ -1,4 +1,5 @@
 import { convertToLocale } from "@lib/util/money"
+import { toBengaliNumerals } from "@lib/util/bengali-numerals"
 import { calculateWeightCharge, getTotalWeight, getChargeableWeightKG } from "@lib/util/calculate-weight-charge"
 import { HttpTypes } from "@medusajs/types"
 
@@ -28,7 +29,7 @@ const OrderSummary = ({ order }: OrderSummaryProps) => {
       <h2 className="text-base-semi">Order Summary</h2>
       <div className="text-small-regular text-ui-fg-base my-2">
         <div className="flex items-center justify-between text-base-regular text-ui-fg-base mb-2">
-          <span>Subtotal</span>
+          <span>সর্বমোট</span>
           <span>{getAmount(order.subtotal)}</span>
         </div>
         <div className="flex flex-col gap-y-1">
@@ -45,15 +46,15 @@ const OrderSummary = ({ order }: OrderSummaryProps) => {
             </div>
           )}
           <div className="flex items-center justify-between">
-            <span>Shipping</span>
+            <span>ডেলিভারি খরচ</span>
             <span>{getAmount(order.shipping_total)}</span>
           </div>
           {weightCharge > 0 && (
             <div className="flex items-center justify-between">
               <span className="flex gap-x-1 items-center">
-                Extra charge on weight ({(totalWeightGrams / 1000).toFixed(2)} kg)
+                ওজনের জন্যে এক্সট্রা খরচ ({toBengaliNumerals((totalWeightGrams / 1000).toFixed(2))} কেজি)
                 <span className="text-ui-fg-muted text-xs">
-                  ({chargeableWeightKG} kg × 20 ৳)
+                  ({toBengaliNumerals(chargeableWeightKG)} কেজি × ২০ ৳)
                 </span>
               </span>
               <span>{getAmount(weightCharge)}</span>
@@ -66,7 +67,7 @@ const OrderSummary = ({ order }: OrderSummaryProps) => {
         </div>
         <div className="h-px w-full border-b border-gray-200 border-dashed my-4" />
         <div className="flex items-center justify-between text-base-regular text-ui-fg-base mb-2">
-          <span>Total</span>
+          <span>সর্বমোট</span>
           <span>{getAmount(order.total)}</span>
         </div>
       </div>

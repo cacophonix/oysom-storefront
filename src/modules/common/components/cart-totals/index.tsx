@@ -1,6 +1,7 @@
 "use client"
 
 import { convertToLocale } from "@lib/util/money"
+import { toBengaliNumerals } from "@lib/util/bengali-numerals"
 import { calculateWeightCharge, getTotalWeight, getChargeableWeightKG } from "@lib/util/calculate-weight-charge"
 import React from "react"
 
@@ -41,13 +42,13 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
     <div>
       <div className="flex flex-col gap-y-2 txt-medium text-ui-fg-subtle ">
         <div className="flex items-center justify-between">
-          <span>Subtotal (excl. shipping and taxes)</span>
+          <span>সর্বমোট (শিপিং এবং ট্যাক্স ছাড়া)</span>
           <span data-testid="cart-subtotal" data-value={item_subtotal || 0}>
             {convertToLocale({ amount: item_subtotal ?? 0, currency_code })}
           </span>
         </div>
         <div className="flex items-center justify-between">
-          <span>Shipping</span>
+          <span>ডেলিভারি খরচ</span>
           <span data-testid="cart-shipping" data-value={shipping_subtotal || 0}>
             {convertToLocale({ amount: shipping_subtotal ?? 0, currency_code })}
           </span>
@@ -55,9 +56,9 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
         {weightCharge > 0 && (
           <div className="flex items-center justify-between">
             <span className="flex gap-x-1 items-center">
-              Extra charge on weight ({(totalWeightGrams / 1000).toFixed(2)} kg)
+              ওজনের জন্যে এক্সট্রা খরচ ({toBengaliNumerals((totalWeightGrams / 1000).toFixed(2))} কেজি)
               <span className="text-ui-fg-muted text-xs">
-                ({chargeableWeightKG} kg × 20 ৳)
+                ({toBengaliNumerals(chargeableWeightKG)} কেজি × ২০ ৳)
               </span>
             </span>
             <span data-testid="cart-weight-charge" data-value={weightCharge}>
@@ -90,7 +91,7 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
       </div>
       <div className="h-px w-full border-b border-gray-200 my-4" />
       <div className="flex items-center justify-between text-ui-fg-base mb-2 txt-medium ">
-        <span>Total</span>
+        <span>সর্বমোট</span>
         <span
           className="txt-xlarge-plus"
           data-testid="cart-total"

@@ -34,7 +34,7 @@ const Review = ({ cart }: { cart: any }) => {
           level="h2"
           className="flex flex-row text-3xl-regular gap-x-2 items-baseline"
         >
-          Review & Place Order
+          অর্ডার কনফার্ম করুন
         </Heading>
       </div>
       <div className="flex items-start gap-x-1 w-full mb-6">

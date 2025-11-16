@@ -191,7 +191,7 @@ const Shipping: React.FC<ShippingProps> = ({
             }
           )}
         >
-          Delivery
+          ডেলিভারি
           {!isOpen && (cart.shipping_methods?.length ?? 0) > 0 && (
             <CheckCircleSolid />
           )}
@@ -215,14 +215,8 @@ const Shipping: React.FC<ShippingProps> = ({
         <>
           <div className="grid">
             <div className="flex flex-col">
-              <span className="font-medium txt-medium text-ui-fg-base">
-                Shipping method
-              </span>
-              <span className="mb-2 text-ui-fg-muted txt-medium">
-                How would you like you order delivered
-              </span>
               <span className="mb-4 text-ui-fg-subtle txt-small italic">
-                Note: For every extra 1 KG, ৳20.00 will be added to the shipping cost
+                দ্রষ্টব্য: প্রতি অতিরিক্ত ১ কেজি-এর জন্য শিপিং খরচের সাথে ৳২০.০০ যোগ করা হবে।
               </span>
             </div>
             <div data-testid="delivery-options-container">

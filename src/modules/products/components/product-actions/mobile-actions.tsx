@@ -7,6 +7,7 @@ import ChevronDown from "@modules/common/icons/chevron-down"
 import X from "@modules/common/icons/x"
 
 import { getProductPrice } from "@lib/util/get-product-price"
+import { toBengaliNumerals } from "@lib/util/bengali-numerals"
 import OptionSelect from "./option-select"
 import { HttpTypes } from "@medusajs/types"
 import { isSimpleProduct } from "@lib/util/product"
@@ -209,16 +210,9 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                           >
                             <span className="text-lg">−</span>
                           </button>
-                          <input
-                            type="number"
-                            value={quantity}
-                            onChange={(e) => onQuantityChange(parseInt(e.target.value) || 1)}
-                            min={1}
-                            max={maxQuantity}
-                            disabled={isAdding || !variant}
-                            className="w-20 h-10 text-center border border-ui-border-base rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-                            aria-label="Quantity"
-                          />
+                          <div className="w-20 h-10 flex items-center justify-center border border-ui-border-base rounded-md disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span className="text-base font-medium">{toBengaliNumerals(quantity)}</span>
+                          </div>
                           <button
                             onClick={() => onQuantityChange(quantity + 1)}
                             disabled={quantity >= maxQuantity || isAdding || !variant}
@@ -229,7 +223,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                           </button>
                           {variant?.manage_inventory && !variant?.allow_backorder && (
                             <span className="text-sm text-ui-fg-subtle ml-2">
-                              {maxQuantity} available
+                              {toBengaliNumerals(maxQuantity)} available
                             </span>
                           )}
                         </div>

@@ -8,6 +8,7 @@ import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
 import Divider from "@modules/common/components/divider"
 import OptionSelect from "@modules/products/components/product-actions/option-select"
+import { toBengaliNumerals } from "@lib/util/bengali-numerals"
 import { isEqual } from "lodash"
 import { useEffect, useMemo, useRef, useState } from "react"
 import ProductPrice from "../product-price"
@@ -188,16 +189,9 @@ export default function ProductActions({
             >
               <span className="text-lg">−</span>
             </button>
-            <input
-              type="number"
-              value={quantity}
-              onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
-              min={1}
-              max={maxQuantity}
-              disabled={isAdding || !selectedVariant}
-              className="w-20 h-10 text-center border border-ui-border-base rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-              aria-label="Quantity"
-            />
+            <div className="w-20 h-10 flex items-center justify-center border border-ui-border-base rounded-md disabled:opacity-50 disabled:cursor-not-allowed">
+              <span className="text-base font-medium">{toBengaliNumerals(quantity)}</span>
+            </div>
             <button
               onClick={() => handleQuantityChange(quantity + 1)}
               disabled={quantity >= maxQuantity || isAdding || !selectedVariant}
@@ -208,7 +202,7 @@ export default function ProductActions({
             </button>
             {selectedVariant?.manage_inventory && !selectedVariant?.allow_backorder && (
               <span className="text-sm text-ui-fg-subtle ml-2">
-                {maxQuantity} available
+                {toBengaliNumerals(maxQuantity)} available
               </span>
             )}
           </div>

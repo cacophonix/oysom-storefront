@@ -1,6 +1,7 @@
 "use client"
 
 import { convertToLocale } from "@lib/util/money"
+import { toBengaliNumerals } from "@lib/util/bengali-numerals"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
 import DeleteButton from "@modules/common/components/delete-button"
@@ -57,7 +58,7 @@ export default function CartSlider({ cart }: CartSliderProps) {
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-2xl font-semibold">
-            Shopping Cart ({totalItems})
+            কার্ট ({toBengaliNumerals(totalItems)})
           </h2>
           <button
             onClick={closeCartSlider}
@@ -117,7 +118,7 @@ export default function CartSlider({ cart }: CartSliderProps) {
                             data-testid="cart-item-quantity"
                             data-value={item.quantity}
                           >
-                            Qty: {item.quantity}
+                            Qty: {toBengaliNumerals(item.quantity)}
                           </span>
                           <LineItemPrice
                             item={item}
@@ -131,7 +132,7 @@ export default function CartSlider({ cart }: CartSliderProps) {
                         className="text-sm text-red-600 hover:text-red-800 self-start mt-2"
                         data-testid="cart-item-remove-button"
                       >
-                        Remove
+                        রিমুভ
                       </DeleteButton>
                     </div>
                   </div>
@@ -157,7 +158,7 @@ export default function CartSlider({ cart }: CartSliderProps) {
         {cart && cart.items?.length ? (
           <div className="border-t border-gray-200 p-6 space-y-4 bg-gray-50">
             <div className="flex items-center justify-between text-lg">
-              <span className="font-semibold">Subtotal</span>
+              <span className="font-semibold">সর্বমোট</span>
               <span
                 className="font-bold text-xl"
                 data-testid="cart-subtotal"
@@ -187,7 +188,7 @@ export default function CartSlider({ cart }: CartSliderProps) {
                   border: 'none'
                 }}
               >
-                Checkout
+                অর্ডার করুন
               </Button>
             </LocalizedClientLink>
           </div>

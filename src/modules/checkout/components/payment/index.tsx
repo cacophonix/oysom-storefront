@@ -140,7 +140,7 @@ const Payment = ({
             }
           )}
         >
-          Payment
+          পেমেন্ট
           {!isOpen && paymentReady && <CheckCircleSolid />}
         </Heading>
         {/* Edit button removed - only one payment option */}
@@ -150,9 +150,6 @@ const Payment = ({
         <div>
           {!paidByGiftcard && availablePaymentMethods?.length && (
             <div className="flex flex-col w-full">
-              <Text className="txt-medium-plus text-ui-fg-base mb-2">
-                Payment method
-              </Text>
               <div className="flex items-center gap-3">
                 <svg
                   width="24"
@@ -176,9 +173,6 @@ const Payment = ({
 
           {paidByGiftcard && (
             <div className="flex flex-col w-1/3">
-              <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment method
-              </Text>
               <Text
                 className="txt-medium text-ui-fg-subtle"
                 data-testid="payment-method-summary"
