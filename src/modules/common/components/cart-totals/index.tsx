@@ -38,6 +38,9 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
   const totalWeightGrams = items ? getTotalWeight(items) : 0
   const chargeableWeightKG = items ? getChargeableWeightKG(items) : 0
 
+  // Calculate total including weight charge
+  const totalWithWeightCharge = (total ?? 0) + weightCharge
+
   return (
     <div>
       <div className="flex flex-col gap-y-2 txt-medium text-ui-fg-subtle ">
@@ -95,9 +98,9 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
         <span
           className="txt-xlarge-plus"
           data-testid="cart-total"
-          data-value={total || 0}
+          data-value={totalWithWeightCharge}
         >
-          {convertToLocale({ amount: total ?? 0, currency_code })}
+          {convertToLocale({ amount: totalWithWeightCharge, currency_code })}
         </span>
       </div>
       <div className="h-px w-full border-b border-gray-200 mt-4" />

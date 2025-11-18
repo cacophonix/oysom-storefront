@@ -34,7 +34,7 @@ export function calculateWeightCharge(
   const extraWeightKG = Math.ceil(extraWeightGrams / 1000)
   
   // Calculate charge: 20 taka per kg
-  // Return in same unit as other prices in system (already in smallest unit)
+  // Return in Taka (same unit as other cart totals from Medusa)
   const chargeInTaka = extraWeightKG * 20
   
   return chargeInTaka

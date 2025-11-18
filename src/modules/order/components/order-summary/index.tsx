@@ -24,6 +24,9 @@ const OrderSummary = ({ order }: OrderSummaryProps) => {
   const totalWeightGrams = order.items ? getTotalWeight(order.items) : 0
   const chargeableWeightKG = order.items ? getChargeableWeightKG(order.items) : 0
 
+  // Calculate total including weight charge
+  const totalWithWeightCharge = (order.total ?? 0) + weightCharge
+
   return (
     <div>
       <h2 className="text-base-semi">Order Summary</h2>
@@ -68,7 +71,7 @@ const OrderSummary = ({ order }: OrderSummaryProps) => {
         <div className="h-px w-full border-b border-gray-200 border-dashed my-4" />
         <div className="flex items-center justify-between text-base-regular text-ui-fg-base mb-2">
           <span>সর্বমোট</span>
-          <span>{getAmount(order.total)}</span>
+          <span>{getAmount(totalWithWeightCharge)}</span>
         </div>
       </div>
     </div>
