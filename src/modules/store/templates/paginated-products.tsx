@@ -21,6 +21,9 @@ export default async function PaginatedProducts({
   categoryId,
   productsIds,
   countryCode,
+  emptyMessage = "No products found.",
+  showPagination = true,
+  productLimit = PRODUCT_LIMIT,
 }: {
   sortBy?: SortOptions
   page: number
@@ -28,9 +31,12 @@ export default async function PaginatedProducts({
   categoryId?: string
   productsIds?: string[]
   countryCode: string
+  emptyMessage?: string
+  showPagination?: boolean
+  productLimit?: number
 }) {
   const queryParams: PaginatedProductsParams = {
-    limit: 12,
+    limit: productLimit,
   }
 
   if (collectionId) {
@@ -62,15 +68,16 @@ export default async function PaginatedProducts({
     queryParams,
     sortBy,
     countryCode,
+    productLimit,
   })
 
-  const totalPages = Math.ceil(count / PRODUCT_LIMIT)
+  const totalPages = Math.ceil(count / productLimit)
 
   // Show message if no products found
   if (products.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500">No products found in the Food category.</p>
+        <p className="text-gray-500">{emptyMessage}</p>
       </div>
     )
   }
@@ -90,7 +97,7 @@ export default async function PaginatedProducts({
           )
         })}
       </ul>
-      {totalPages > 1 && (
+      {showPagination && totalPages > 1 && (
         <Pagination
           data-testid="product-pagination"
           page={page}

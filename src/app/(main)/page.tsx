@@ -1,11 +1,13 @@
 import { Metadata } from "next"
 import Image from "next/image"
+import { Suspense } from "react"
 
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
-import StoreTemplate from "@modules/store/templates"
 import BannerSlideshow from "@modules/home/components/banner-slideshow"
-import { getSlideshowImages } from "@lib/util/get-slideshow-images"
+import HomepageProducts from "@modules/home/components/homepage-products"
+import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
 import { listCategories } from "@lib/data/categories"
+import { getSlideshowImages } from "@lib/util/get-slideshow-images"
+import { buildHomepageCategorySections } from "@lib/util/homepage-categories"
 
 export const metadata: Metadata = {
   title: "ঐতিহ্যের সম্ভার - Premium Online Store",
@@ -34,35 +36,21 @@ export const metadata: Metadata = {
   },
 }
 
-type Params = {
-  searchParams: Promise<{
-    sortBy?: SortOptions
-    page?: string
-  }>
-}
-
-export default async function HomePage(props: Params) {
-  const searchParams = await props.searchParams;
-  const { sortBy, page } = searchParams
-
-  // Get slideshow images
+export default async function HomePage() {
   const slideshowImages = await getSlideshowImages()
 
-  // Fetch categories and find the Food category
-  let foodCategoryId: string | undefined
+  let categorySections = buildHomepageCategorySections([])
+  let allCategories: Awaited<ReturnType<typeof listCategories>> = []
+
   try {
-    const categories = await listCategories()
-    const foodCategory = categories?.find(
-      (cat) => cat.name.toLowerCase() === "food"
-    )
-    foodCategoryId = foodCategory?.id
+    allCategories = (await listCategories()) ?? []
+    categorySections = buildHomepageCategorySections(allCategories)
   } catch (error) {
-    console.error("Error fetching Food category:", error)
+    console.error("Error fetching categories:", error)
   }
 
   return (
     <>
-      {/* Banner Hero Section */}
       <section className="py-0">
         <div className="content-container px-4 sm:px-6">
           {slideshowImages.length > 0 ? (
@@ -80,13 +68,13 @@ export default async function HomePage(props: Params) {
         </div>
       </section>
 
-      {/* Products Section - Only Food Category */}
-      <StoreTemplate
-        sortBy={sortBy}
-        page={page}
-        countryCode="bd"
-        categoryId={foodCategoryId}
-      />
+      <Suspense fallback={<SkeletonProductGrid />}>
+        <HomepageProducts
+          categorySections={categorySections}
+          allCategories={allCategories}
+          countryCode="bd"
+        />
+      </Suspense>
     </>
   )
 }

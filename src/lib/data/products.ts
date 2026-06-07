@@ -95,17 +95,19 @@ export const listProductsWithSort = async ({
   queryParams,
   sortBy = "created_at",
   countryCode,
+  productLimit,
 }: {
   page?: number
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
   sortBy?: SortOptions
   countryCode: string
+  productLimit?: number
 }): Promise<{
   response: { products: HttpTypes.StoreProduct[]; count: number }
   nextPage: number | null
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
 }> => {
-  const limit = queryParams?.limit || 12
+  const limit = productLimit ?? queryParams?.limit ?? 12
 
   const {
     response: { products, count },
@@ -113,7 +115,7 @@ export const listProductsWithSort = async ({
     pageParam: 0,
     queryParams: {
       ...queryParams,
-      limit: 100,
+      limit: Math.max(limit, 100),
     },
     countryCode,
   })
