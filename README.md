@@ -123,3 +123,7 @@ You'll also need to setup the integrations in your Medusa server. See the [Medus
 - [Website](https://nextjs.org/)
 - [GitHub](https://github.com/vercel/next.js)
 - [Documentation](https://nextjs.org/docs)
+
+## Oysom Storefront
+
+This repository powers the Oysom ecommerce storefront, built on the Medusa Next.js starter template.
