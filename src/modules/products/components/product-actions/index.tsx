@@ -1,13 +1,15 @@
 "use client"
 
 import { addToCart } from "@lib/data/cart"
+import { useCartSlider } from "@lib/context/cart-slider-context"
+import { useProduct } from "@lib/context/product-context"
 import { useIntersection } from "@lib/hooks/use-in-view"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
 import Divider from "@modules/common/components/divider"
 import OptionSelect from "@modules/products/components/product-actions/option-select"
+import { toBengaliNumerals } from "@lib/util/bengali-numerals"
 import { isEqual } from "lodash"
-import { useParams } from "next/navigation"
 import { useEffect, useMemo, useRef, useState } from "react"
 import ProductPrice from "../product-price"
 import MobileActions from "./mobile-actions"
@@ -32,8 +34,10 @@ export default function ProductActions({
   disabled,
 }: ProductActionsProps) {
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
+  const [quantity, setQuantity] = useState(1)
   const [isAdding, setIsAdding] = useState(false)
-  const countryCode = useParams().countryCode as string
+  const { openCartSlider } = useCartSlider()
+  const { setSelectedVariant } = useProduct()
 
   // If there is only 1 variant, preselect the options
   useEffect(() => {
@@ -53,6 +57,11 @@ export default function ProductActions({
       return isEqual(variantOptions, options)
     })
   }, [product.variants, options])
+
+  // Update context when selected variant changes
+  useEffect(() => {
+    setSelectedVariant(selectedVariant)
+  }, [selectedVariant, setSelectedVariant])
 
   // update the options when a variant is selected
   const setOptionValue = (optionId: string, value: string) => {
@@ -94,6 +103,31 @@ export default function ProductActions({
     return false
   }, [selectedVariant])
 
+  // Get max quantity available
+  const maxQuantity = useMemo(() => {
+    if (!selectedVariant) return 1
+    
+    // If we don't manage inventory or allow backorders, no limit
+    if (!selectedVariant.manage_inventory || selectedVariant.allow_backorder) {
+      return 99
+    }
+
+    // Otherwise, limit to inventory quantity
+    return Math.max(selectedVariant.inventory_quantity || 1, 1)
+  }, [selectedVariant])
+
+  // Adjust quantity if it exceeds max when variant changes
+  useEffect(() => {
+    if (quantity > maxQuantity) {
+      setQuantity(maxQuantity)
+    }
+  }, [maxQuantity, quantity])
+
+  const handleQuantityChange = (newQuantity: number) => {
+    const validQuantity = Math.max(1, Math.min(newQuantity, maxQuantity))
+    setQuantity(validQuantity)
+  }
+
   const actionsRef = useRef<HTMLDivElement>(null)
 
   const inView = useIntersection(actionsRef, "0px")
@@ -106,11 +140,14 @@ export default function ProductActions({
 
     await addToCart({
       variantId: selectedVariant.id,
-      quantity: 1,
-      countryCode,
+      quantity: quantity,
+      countryCode: "bd",
     })
 
     setIsAdding(false)
+    
+    // Don't open cart slider for regular "Add to cart"
+    // Cart slider only opens for "Quick buy" button
   }
 
   return (
@@ -140,6 +177,37 @@ export default function ProductActions({
 
         <ProductPrice product={product} variant={selectedVariant} />
 
+        {/* Quantity Selector */}
+        <div className="flex flex-col gap-y-2">
+          <label className="text-sm font-medium text-ui-fg-base">Quantity</label>
+          <div className="flex items-center gap-x-2">
+            <button
+              onClick={() => handleQuantityChange(quantity - 1)}
+              disabled={quantity <= 1 || isAdding || !selectedVariant}
+              className="w-10 h-10 flex items-center justify-center border border-ui-border-base rounded-md hover:bg-ui-bg-subtle disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              aria-label="Decrease quantity"
+            >
+              <span className="text-lg">−</span>
+            </button>
+            <div className="w-20 h-10 flex items-center justify-center border border-ui-border-base rounded-md disabled:opacity-50 disabled:cursor-not-allowed">
+              <span className="text-base font-medium">{toBengaliNumerals(quantity)}</span>
+            </div>
+            <button
+              onClick={() => handleQuantityChange(quantity + 1)}
+              disabled={quantity >= maxQuantity || isAdding || !selectedVariant}
+              className="w-10 h-10 flex items-center justify-center border border-ui-border-base rounded-md hover:bg-ui-bg-subtle disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              aria-label="Increase quantity"
+            >
+              <span className="text-lg">+</span>
+            </button>
+            {selectedVariant?.manage_inventory && !selectedVariant?.allow_backorder && (
+              <span className="text-sm text-ui-fg-subtle ml-2">
+                {toBengaliNumerals(maxQuantity)} available
+              </span>
+            )}
+          </div>
+        </div>
+
         <Button
           onClick={handleAddToCart}
           disabled={
@@ -153,6 +221,15 @@ export default function ProductActions({
           className="w-full h-10"
           isLoading={isAdding}
           data-testid="add-product-button"
+          style={
+            !inStock || !selectedVariant || !!disabled || !isValidVariant
+              ? undefined
+              : {
+                  backgroundColor: '#FFBB55',
+                  color: '#000',
+                  border: 'none'
+                }
+          }
         >
           {!selectedVariant && !options
             ? "Select variant"
@@ -170,6 +247,9 @@ export default function ProductActions({
           isAdding={isAdding}
           show={!inView}
           optionsDisabled={!!disabled || isAdding}
+          quantity={quantity}
+          maxQuantity={maxQuantity}
+          onQuantityChange={handleQuantityChange}
         />
       </div>
     </>

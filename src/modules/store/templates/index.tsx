@@ -11,10 +11,12 @@ const StoreTemplate = async ({
   sortBy,
   page,
   countryCode,
+  categoryId,
 }: {
   sortBy?: SortOptions
   page?: string
   countryCode: string
+  categoryId?: string
 }) => {
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
@@ -28,22 +30,21 @@ const StoreTemplate = async ({
   }
 
   return (
-    <div
-      className="flex flex-col small:flex-row small:items-start py-6 content-container"
-      data-testid="category-container"
-    >
-      <RefinementList sortBy={sort} categories={categories} />
-      <div className="w-full">
-        <div className="mb-8 text-2xl-semi">
-          <h1 data-testid="store-page-title">All products</h1>
+    <div className="py-6">
+      <div className="content-container">
+        <div className="mb-8 text-2xl-semi text-center">
+          <h1 data-testid="store-page-title">আমাদের পণ্যসমূহ</h1>
         </div>
-        <Suspense fallback={<SkeletonProductGrid />}>
-          <PaginatedProducts
-            sortBy={sort}
-            page={pageNumber}
-            countryCode={countryCode}
-          />
-        </Suspense>
+        <div data-testid="category-container">
+          <Suspense fallback={<SkeletonProductGrid />}>
+            <PaginatedProducts
+              sortBy={sort}
+              page={pageNumber}
+              countryCode={countryCode}
+              categoryId={categoryId}
+            />
+          </Suspense>
+        </div>
       </div>
     </div>
   )

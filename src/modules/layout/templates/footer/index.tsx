@@ -21,14 +21,27 @@ export default async function Footer() {
             />
           </LocalizedClientLink>
         </div>
-        <div className="flex w-full mb-16 justify-between text-ui-fg-muted items-center">
-          <Text className="txt-compact-small">
-            © {new Date().getFullYear()} ঐতিহ্যের সম্ভার. All rights reserved.
-          </Text>
+        <div className="flex w-full mb-16 justify-between text-ui-fg-muted items-start">
+          <div className="flex flex-col gap-1">
+            <Text className="txt-compact-small">
+              © {new Date().getFullYear()} ঐতিহ্যের সম্ভার. All rights reserved.
+            </Text>
+            <Text className="txt-compact-small">
+              Powered by{" "}
+              <a
+                href="https://www.glaceit.ca/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-ui-fg-base transition-colors underline"
+              >
+                Glace IT
+              </a>
+            </Text>
+          </div>
           <div className="flex items-center gap-4">
             <Text className="txt-compact-small">Follow us:</Text>
             <a
-              href="https://www.facebook.com/oitijhyershombhar"
+              href="https://www.facebook.com/oysomv"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-ui-fg-base transition-colors"

@@ -106,6 +106,27 @@ const Payment = ({
     setError(null)
   }, [isOpen])
 
+  // Auto-select first payment method (Cash on Delivery) on component mount
+  useEffect(() => {
+    const autoSelectPayment = async () => {
+      if (availablePaymentMethods?.length > 0 && !paidByGiftcard && !activeSession) {
+        const firstPaymentMethod = availablePaymentMethods[0].id
+        
+        setSelectedPaymentMethod(firstPaymentMethod)
+
+        try {
+          await initiatePaymentSession(cart, {
+            provider_id: firstPaymentMethod,
+          })
+        } catch (err: any) {
+          setError(err.message)
+        }
+      }
+    }
+
+    autoSelectPayment()
+  }, [availablePaymentMethods, paidByGiftcard, activeSession])
+
   return (
     <div className="bg-white">
       <div className="flex flex-row items-center justify-between mb-6">
@@ -119,58 +140,39 @@ const Payment = ({
             }
           )}
         >
-          Payment
+          পেমেন্ট
           {!isOpen && paymentReady && <CheckCircleSolid />}
         </Heading>
-        {!isOpen && paymentReady && (
-          <Text>
-            <button
-              onClick={handleEdit}
-              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
-              data-testid="edit-payment-button"
-            >
-              Edit
-            </button>
-          </Text>
-        )}
+        {/* Edit button removed - only one payment option */}
       </div>
       <div>
-        <div className={isOpen ? "block" : "hidden"}>
+        {/* Always show payment information */}
+        <div>
           {!paidByGiftcard && availablePaymentMethods?.length && (
-            <>
-              <RadioGroup
-                value={selectedPaymentMethod}
-                onChange={(value: string) => setPaymentMethod(value)}
-              >
-                {availablePaymentMethods.map((paymentMethod) => (
-                  <div key={paymentMethod.id}>
-                    {isStripeFunc(paymentMethod.id) ? (
-                      <StripeCardContainer
-                        paymentProviderId={paymentMethod.id}
-                        selectedPaymentOptionId={selectedPaymentMethod}
-                        paymentInfoMap={paymentInfoMap}
-                        setCardBrand={setCardBrand}
-                        setError={setError}
-                        setCardComplete={setCardComplete}
-                      />
-                    ) : (
-                      <PaymentContainer
-                        paymentInfoMap={paymentInfoMap}
-                        paymentProviderId={paymentMethod.id}
-                        selectedPaymentOptionId={selectedPaymentMethod}
-                      />
-                    )}
-                  </div>
-                ))}
-              </RadioGroup>
-            </>
+            <div className="flex flex-col w-full">
+              <div className="flex items-center gap-3">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="text-green-600"
+                >
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                <Text className="txt-medium text-ui-fg-subtle">
+                  {paymentInfoMap[availablePaymentMethods[0].id]?.title || "Cash on Delivery"}
+                </Text>
+              </div>
+            </div>
           )}
 
           {paidByGiftcard && (
             <div className="flex flex-col w-1/3">
-              <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment method
-              </Text>
               <Text
                 className="txt-medium text-ui-fg-subtle"
                 data-testid="payment-method-summary"
@@ -184,25 +186,9 @@ const Payment = ({
             error={error}
             data-testid="payment-method-error-message"
           />
-
-          <Button
-            size="large"
-            className="mt-6"
-            onClick={handleSubmit}
-            isLoading={isLoading}
-            disabled={
-              (isStripe && !cardComplete) ||
-              (!selectedPaymentMethod && !paidByGiftcard)
-            }
-            data-testid="submit-payment-button"
-          >
-            {!activeSession && isStripeFunc(selectedPaymentMethod)
-              ? " Enter card details"
-              : "Continue to review"}
-          </Button>
         </div>
 
-        <div className={isOpen ? "hidden" : "block"}>
+        <div className="hidden">
           {cart && paymentReady && activeSession ? (
             <div className="flex items-start gap-x-1 w-full">
               <div className="flex flex-col w-1/3">

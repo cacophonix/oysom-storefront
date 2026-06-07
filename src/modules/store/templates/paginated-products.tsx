@@ -66,10 +66,20 @@ export default async function PaginatedProducts({
 
   const totalPages = Math.ceil(count / PRODUCT_LIMIT)
 
+  // Show message if no products found
+  if (products.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500">No products found in the Food category.</p>
+      </div>
+    )
+  }
+
   return (
     <>
       <ul
-        className="grid grid-cols-2 w-full small:grid-cols-3 medium:grid-cols-4 gap-x-6 gap-y-8"
+        className="grid grid-cols-2 w-full small:grid-cols-3 medium:grid-cols-4 gap-y-16 justify-items-stretch"
+        style={{ gap: '0 1.5rem' }}
         data-testid="products-list"
       >
         {products.map((p) => {

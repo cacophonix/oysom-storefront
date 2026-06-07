@@ -12,6 +12,7 @@ import LineItemUnitPrice from "@modules/common/components/line-item-unit-price"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Spinner from "@modules/common/icons/spinner"
 import Thumbnail from "@modules/products/components/thumbnail"
+import { toBengaliNumerals } from "@lib/util/bengali-numerals"
 import { useState } from "react"
 
 type ItemProps = {
@@ -41,8 +42,8 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
   }
 
   // TODO: Update this to grab the actual max inventory
-  const maxQtyFromInventory = 10
-  const maxQuantity = item.variant?.manage_inventory ? 10 : maxQtyFromInventory
+  const maxQtyFromInventory = 20
+  const maxQuantity = item.variant?.manage_inventory ? 20 : maxQtyFromInventory
 
   return (
     <Table.Row className="w-full" data-testid="product-row">
@@ -85,18 +86,14 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
               {/* TODO: Update this with the v2 way of managing inventory */}
               {Array.from(
                 {
-                  length: Math.min(maxQuantity, 10),
+                  length: Math.min(maxQuantity, 20),
                 },
                 (_, i) => (
                   <option value={i + 1} key={i}>
-                    {i + 1}
+                    {toBengaliNumerals(i + 1)}
                   </option>
                 )
               )}
-
-              <option value={1} key={1}>
-                1
-              </option>
             </CartItemSelect>
             {updating && <Spinner />}
           </div>

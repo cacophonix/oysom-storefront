@@ -91,7 +91,7 @@ const Overview = ({ customer, orders }: OverviewProps) => {
                                 Order number
                               </span>
                               <span className="font-semibold">
-                                Total amount
+                                সর্বমোট
                               </span>
                               <span data-testid="order-created-date">
                                 {new Date(order.created_at).toDateString()}

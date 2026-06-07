@@ -7,6 +7,7 @@ import ChevronDown from "@modules/common/icons/chevron-down"
 import X from "@modules/common/icons/x"
 
 import { getProductPrice } from "@lib/util/get-product-price"
+import { toBengaliNumerals } from "@lib/util/bengali-numerals"
 import OptionSelect from "./option-select"
 import { HttpTypes } from "@medusajs/types"
 import { isSimpleProduct } from "@lib/util/product"
@@ -21,6 +22,9 @@ type MobileActionsProps = {
   isAdding?: boolean
   show: boolean
   optionsDisabled: boolean
+  quantity: number
+  maxQuantity: number
+  onQuantityChange: (quantity: number) => void
 }
 
 const MobileActions: React.FC<MobileActionsProps> = ({
@@ -33,6 +37,9 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   isAdding,
   show,
   optionsDisabled,
+  quantity,
+  maxQuantity,
+  onQuantityChange,
 }) => {
   const { state, open, close } = useToggleState()
 
@@ -172,23 +179,56 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                     </button>
                   </div>
                   <div className="bg-white px-6 py-12">
-                    {(product.variants?.length ?? 0) > 1 && (
-                      <div className="flex flex-col gap-y-6">
-                        {(product.options || []).map((option) => {
-                          return (
-                            <div key={option.id}>
-                              <OptionSelect
-                                option={option}
-                                current={options[option.id]}
-                                updateOption={updateOptions}
-                                title={option.title ?? ""}
-                                disabled={optionsDisabled}
-                              />
-                            </div>
-                          )
-                        })}
+                    <div className="flex flex-col gap-y-6">
+                      {(product.variants?.length ?? 0) > 1 && (
+                        <>
+                          {(product.options || []).map((option) => {
+                            return (
+                              <div key={option.id}>
+                                <OptionSelect
+                                  option={option}
+                                  current={options[option.id]}
+                                  updateOption={updateOptions}
+                                  title={option.title ?? ""}
+                                  disabled={optionsDisabled}
+                                />
+                              </div>
+                            )
+                          })}
+                        </>
+                      )}
+                      
+                      {/* Quantity Selector in Mobile */}
+                      <div className="flex flex-col gap-y-2">
+                        <label className="text-sm font-medium text-ui-fg-base">Quantity</label>
+                        <div className="flex items-center gap-x-2">
+                          <button
+                            onClick={() => onQuantityChange(quantity - 1)}
+                            disabled={quantity <= 1 || isAdding || !variant}
+                            className="w-10 h-10 flex items-center justify-center border border-ui-border-base rounded-md hover:bg-ui-bg-subtle disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            aria-label="Decrease quantity"
+                          >
+                            <span className="text-lg">−</span>
+                          </button>
+                          <div className="w-20 h-10 flex items-center justify-center border border-ui-border-base rounded-md disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span className="text-base font-medium">{toBengaliNumerals(quantity)}</span>
+                          </div>
+                          <button
+                            onClick={() => onQuantityChange(quantity + 1)}
+                            disabled={quantity >= maxQuantity || isAdding || !variant}
+                            className="w-10 h-10 flex items-center justify-center border border-ui-border-base rounded-md hover:bg-ui-bg-subtle disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            aria-label="Increase quantity"
+                          >
+                            <span className="text-lg">+</span>
+                          </button>
+                          {variant?.manage_inventory && !variant?.allow_backorder && (
+                            <span className="text-sm text-ui-fg-subtle ml-2">
+                              {toBengaliNumerals(maxQuantity)} available
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    )}
+                    </div>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

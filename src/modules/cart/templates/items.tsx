@@ -26,7 +26,7 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
               Price
             </Table.HeaderCell>
             <Table.HeaderCell className="!pr-0 text-right">
-              Total
+              সর্বমোট
             </Table.HeaderCell>
           </Table.Row>
         </Table.Header>

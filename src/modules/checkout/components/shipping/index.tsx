@@ -148,6 +148,36 @@ const Shipping: React.FC<ShippingProps> = ({
     setError(null)
   }, [isOpen])
 
+  // Auto-select first shipping method and proceed to payment
+  useEffect(() => {
+    const autoSelectAndProceed = async () => {
+      if (isOpen && _shippingMethods?.length && !cart.shipping_methods?.length) {
+        const firstShippingMethod = _shippingMethods[0]
+        
+        if (firstShippingMethod && !isLoadingPrices) {
+          setIsLoading(true)
+          setShippingMethodId(firstShippingMethod.id)
+          
+          try {
+            await setShippingMethod({
+              cartId: cart.id,
+              shippingMethodId: firstShippingMethod.id
+            })
+            
+            // Auto-proceed to payment step
+            router.push(pathname + "?step=payment", { scroll: false })
+          } catch (err: any) {
+            setError(err.message)
+          } finally {
+            setIsLoading(false)
+          }
+        }
+      }
+    }
+
+    autoSelectAndProceed()
+  }, [isOpen, _shippingMethods, cart.shipping_methods, isLoadingPrices])
+
   return (
     <div className="bg-white">
       <div className="flex flex-row items-center justify-between mb-6">
@@ -161,7 +191,7 @@ const Shipping: React.FC<ShippingProps> = ({
             }
           )}
         >
-          Delivery
+          ডেলিভারি
           {!isOpen && (cart.shipping_methods?.length ?? 0) > 0 && (
             <CheckCircleSolid />
           )}
@@ -181,15 +211,12 @@ const Shipping: React.FC<ShippingProps> = ({
             </Text>
           )}
       </div>
-      {isOpen ? (
+      {isOpen || true ? (
         <>
           <div className="grid">
             <div className="flex flex-col">
-              <span className="font-medium txt-medium text-ui-fg-base">
-                Shipping method
-              </span>
-              <span className="mb-4 text-ui-fg-muted txt-medium">
-                How would you like you order delivered
+              <span className="mb-4 text-ui-fg-subtle txt-small italic">
+                দ্রষ্টব্য: প্রতি অতিরিক্ত ১ কেজি-এর জন্য শিপিং খরচের সাথে ৳২০.০০ যোগ করা হবে।
               </span>
             </div>
             <div data-testid="delivery-options-container">
@@ -368,38 +395,10 @@ const Shipping: React.FC<ShippingProps> = ({
               error={error}
               data-testid="delivery-option-error-message"
             />
-            <Button
-              size="large"
-              className="mt"
-              onClick={handleSubmit}
-              isLoading={isLoading}
-              disabled={!cart.shipping_methods?.[0]}
-              data-testid="submit-delivery-option-button"
-            >
-              Continue to payment
-            </Button>
+            {/* Continue to payment button removed - auto-proceeding */}
           </div>
         </>
-      ) : (
-        <div>
-          <div className="text-small-regular">
-            {cart && (cart.shipping_methods?.length ?? 0) > 0 && (
-              <div className="flex flex-col w-1/3">
-                <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                  Method
-                </Text>
-                <Text className="txt-medium text-ui-fg-subtle">
-                  {cart.shipping_methods!.at(-1)!.name}{" "}
-                  {convertToLocale({
-                    amount: cart.shipping_methods!.at(-1)!.amount!,
-                    currency_code: cart?.currency_code,
-                  })}
-                </Text>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      ) : null}
       <Divider className="mt-8" />
     </div>
   )

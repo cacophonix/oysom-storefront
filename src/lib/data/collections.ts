@@ -7,6 +7,7 @@ import { getCacheOptions } from "./cookies"
 export const retrieveCollection = async (id: string) => {
   const next = {
     ...(await getCacheOptions("collections")),
+    revalidate: 60, // Revalidate every 60 seconds
   }
 
   return sdk.client
@@ -14,7 +15,7 @@ export const retrieveCollection = async (id: string) => {
       `/store/collections/${id}`,
       {
         next,
-        cache: "force-cache",
+        cache: "no-store", // Changed from force-cache to no-store for fresh data
       }
     )
     .then(({ collection }) => collection)
@@ -25,6 +26,7 @@ export const listCollections = async (
 ): Promise<{ collections: HttpTypes.StoreCollection[]; count: number }> => {
   const next = {
     ...(await getCacheOptions("collections")),
+    revalidate: 60, // Revalidate every 60 seconds
   }
 
   queryParams.limit = queryParams.limit || "100"
@@ -36,7 +38,7 @@ export const listCollections = async (
       {
         query: queryParams,
         next,
-        cache: "force-cache",
+        cache: "no-store", // Changed from force-cache to no-store for fresh data
       }
     )
     .then(({ collections }) => ({ collections, count: collections.length }))
@@ -47,13 +49,14 @@ export const getCollectionByHandle = async (
 ): Promise<HttpTypes.StoreCollection> => {
   const next = {
     ...(await getCacheOptions("collections")),
+    revalidate: 60, // Revalidate every 60 seconds
   }
 
   return sdk.client
     .fetch<HttpTypes.StoreCollectionListResponse>(`/store/collections`, {
       query: { handle, fields: "*products" },
       next,
-      cache: "force-cache",
+      cache: "no-store", // Changed from force-cache to no-store for fresh data
     })
     .then(({ collections }) => collections[0])
 }

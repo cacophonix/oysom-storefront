@@ -14,6 +14,7 @@ import {
   setCartId,
 } from "./cookies"
 import { getRegion } from "./regions"
+import { calculateWeightCharge } from "@lib/util/calculate-weight-charge"
 
 /**
  * Retrieves a cart by its ID. If no ID is provided, it will use the cart ID from the cookies.
@@ -22,7 +23,7 @@ import { getRegion } from "./regions"
  */
 export async function retrieveCart(cartId?: string, fields?: string) {
   const id = cartId || (await getCartId())
-  fields ??= "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name"
+  fields ??= "*items, *region, *items.product, *items.variant, +items.variant.weight, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name"
 
   if (!id) {
     return null
@@ -34,6 +35,7 @@ export async function retrieveCart(cartId?: string, fields?: string) {
 
   const next = {
     ...(await getCacheOptions("carts")),
+    revalidate: 0, // No caching for carts - always fetch fresh data
   }
 
   return await sdk.client
@@ -44,7 +46,7 @@ export async function retrieveCart(cartId?: string, fields?: string) {
       },
       headers,
       next,
-      cache: "force-cache",
+      cache: "no-store", // Changed from force-cache to no-store for fresh cart data
     })
     .then(({ cart }: { cart: HttpTypes.StoreCart }) => cart)
     .catch(() => null)
@@ -341,11 +343,22 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
       throw new Error("No existing cart found when setting addresses")
     }
 
+    // Get address and police station
+    const address1 = formData.get("shipping_address.address_1") as string
+    const policeStation = formData.get("police_station") as string
+    
+    // Append police station to address if provided
+    const fullAddress = policeStation
+      ? `${address1}, Police Station: ${policeStation}`
+      : address1
+
+    const email = formData.get("email") as string
+    
     const data = {
       shipping_address: {
         first_name: formData.get("shipping_address.first_name"),
         last_name: formData.get("shipping_address.last_name"),
-        address_1: formData.get("shipping_address.address_1"),
+        address_1: fullAddress,
         address_2: "",
         company: formData.get("shipping_address.company"),
         postal_code: formData.get("shipping_address.postal_code"),
@@ -354,7 +367,8 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
         province: formData.get("shipping_address.province"),
         phone: formData.get("shipping_address.phone"),
       },
-      email: formData.get("email"),
+      // Only include email if it's provided
+      ...(email && email.trim() !== "" && { email }),
     } as any
 
     const sameAsBilling = formData.get("same_as_billing")
@@ -378,9 +392,7 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
     return e.message
   }
 
-  redirect(
-    `/${formData.get("shipping_address.country_code")}/checkout?step=delivery`
-  )
+  redirect(`/checkout?step=delivery`)
 }
 
 /**
@@ -397,6 +409,27 @@ export async function placeOrder(cartId?: string) {
 
   const headers = {
     ...(await getAuthHeaders()),
+  }
+
+  // Retrieve cart with items to calculate weight charge
+  const cart = await retrieveCart(id)
+  
+  // Calculate weight delivery charge and store in cart metadata before completing
+  if (cart && cart.items) {
+    const weightCharge = calculateWeightCharge(cart.items)
+    
+    // Update cart metadata with weight charge
+    await sdk.store.cart.update(
+      id,
+      {
+        metadata: {
+          ...cart.metadata,
+          weight_delivery_charge: weightCharge,
+        },
+      },
+      {},
+      headers
+    )
   }
 
   const cartRes = await sdk.store.cart
@@ -416,7 +449,7 @@ export async function placeOrder(cartId?: string) {
     revalidateTag(orderCacheTag)
 
     removeCartId()
-    redirect(`/${countryCode}/order/${cartRes?.order.id}/confirmed`)
+    redirect(`/order/${cartRes?.order.id}/confirmed`)
   }
 
   return cartRes.cart
@@ -447,7 +480,7 @@ export async function updateRegion(countryCode: string, currentPath: string) {
   const productsCacheTag = await getCacheTag("products")
   revalidateTag(productsCacheTag)
 
-  redirect(`/${countryCode}${currentPath}`)
+  redirect(`${currentPath}`)
 }
 
 export async function listCartOptions() {
@@ -457,6 +490,7 @@ export async function listCartOptions() {
   }
   const next = {
     ...(await getCacheOptions("shippingOptions")),
+    revalidate: 60, // Revalidate every 60 seconds
   }
 
   return await sdk.client.fetch<{
@@ -465,6 +499,6 @@ export async function listCartOptions() {
     query: { cart_id: cartId },
     next,
     headers,
-    cache: "force-cache",
+    cache: "no-store", // Changed from force-cache to no-store for fresh data
   })
 }

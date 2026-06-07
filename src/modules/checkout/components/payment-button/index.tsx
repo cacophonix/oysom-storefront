@@ -17,11 +17,21 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
   cart,
   "data-testid": dataTestId,
 }) => {
+  // Check if all required address fields are filled
+  const hasRequiredAddressFields = cart?.shipping_address?.first_name &&
+    cart?.shipping_address?.address_1 &&
+    cart?.shipping_address?.city &&
+    cart?.shipping_address?.phone
+
+  // Check if police station is included in address_1 (it's appended there)
+  const hasPoliceStation = cart?.shipping_address?.address_1?.includes("Police Station:")
+
   const notReady =
     !cart ||
     !cart.shipping_address ||
     !cart.billing_address ||
-    !cart.email ||
+    !hasRequiredAddressFields ||
+    !hasPoliceStation ||
     (cart.shipping_methods?.length ?? 0) < 1
 
   const paymentSession = cart.payment_collection?.payment_sessions?.[0]
@@ -59,6 +69,10 @@ const StripePaymentButton = ({
   const onPaymentCompleted = async () => {
     await placeOrder()
       .catch((err) => {
+        // Ignore Next.js redirect errors - these are expected navigation behavior
+        if (err.digest && err.digest.startsWith('NEXT_REDIRECT')) {
+          return
+        }
         setErrorMessage(err.message)
       })
       .finally(() => {
@@ -140,6 +154,11 @@ const StripePaymentButton = ({
         size="large"
         isLoading={submitting}
         data-testid={dataTestId}
+        style={{
+          backgroundColor: '#FFBB55',
+          color: '#000',
+          border: 'none'
+        }}
       >
         Place order
       </Button>
@@ -158,6 +177,10 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
   const onPaymentCompleted = async () => {
     await placeOrder()
       .catch((err) => {
+        // Ignore Next.js redirect errors - these are expected navigation behavior
+        if (err.digest && err.digest.startsWith('NEXT_REDIRECT')) {
+          return
+        }
         setErrorMessage(err.message)
       })
       .finally(() => {
@@ -167,7 +190,6 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
 
   const handlePayment = () => {
     setSubmitting(true)
-
     onPaymentCompleted()
   }
 
@@ -179,6 +201,11 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
         onClick={handlePayment}
         size="large"
         data-testid="submit-order-button"
+        style={{
+          backgroundColor: '#FFBB55',
+          color: '#000',
+          border: 'none'
+        }}
       >
         Place order
       </Button>
